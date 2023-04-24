@@ -1,0 +1,49 @@
+{
+    "name": "jobmetric/translation",
+    "description": "This is a package for translating the contents of different Laravel projects.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Majid Mohammadian",
+            "email": "majeedmohammadian@gmail.com",
+            "homepage": "https://www.linkedin.com/in/majidmohammadian/",
+            "role": "Full Stack Developer"
+        },
+        {
+            "name": "Alireza Mir Esmaili",
+            "email": "alirezamires@gmail.com",
+            "homepage": "https://www.linkedin.com/in/alirezamires/",
+            "role": "Full Stack Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.1",
+        "ext-json": "*",
+        "laravel/framework": ">=9.19"
+    },
+    "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
+        "psr-4": {
+            "JobMetric\\Translation\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "JobMetric\\Translation\\Providers\\TranslationServiceProvider"
+            ],
+            "aliases": {
+                "JTranslation": "JobMetric\\Translation\\Facades\\TranslationService"
+            }
+        }
+    },
+    "minimum-stability" : "stable",
+    "support": {
+        "issues": "https://github.com/jobmetric/translation/issues",
+        "forum": "https://twitter.com/jobmetric",
+        "source": "https://github.com/jobmetric/translation"
+    }
+}
