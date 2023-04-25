@@ -2,14 +2,8 @@
 
 namespace JobMetric\Translation\Providers;
 
-use Cache;
 use Illuminate\Support\ServiceProvider;
-use JobMetric\Translation\Console\Commands\CreateViewCommand;
 use JobMetric\Translation\TranslationService;
-use JobMetric\Translation\Http\Middleware\SetConfig;
-use JobMetric\Translation\Models\Setting;
-use JobMetric\Translation\Object\Config;
-use Illuminate\Support\Facades\Schema;
 
 class TranslationServiceProvider extends ServiceProvider
 {
@@ -25,17 +19,7 @@ class TranslationServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
-    {
-        $this->registerPublishables();
-    }
-
-    /**
-     * Register publishables
-     *
-     * @return void
-     */
-    private function registerPublishables(): void
+    public function boot(): void
     {
         // publish config
         $this->publishes([
@@ -43,20 +27,25 @@ class TranslationServiceProvider extends ServiceProvider
         ], 'config');
 
         // publish migration
-        if (!$this->migrationExists('create_translations_table')) {
+        if (!$this->migrationTranslationExists()) {
             $this->publishes([
                 realpath(__DIR__.'/../../database/migrations/create_translations_table.php.stub') => database_path('migrations/'.date('Y_m_d_His', time()).'_create_translations_table.php')
             ], 'migrations');
         }
     }
 
-    private function migrationExists($migration): bool
+    /**
+     * check migration translation table
+     *
+     * @return bool
+     */
+    private function migrationTranslationExists(): bool
     {
         $path = database_path('migrations/');
         $files = scandir($path);
 
         foreach ($files as &$value) {
-            $position = strpos($value, $migration);
+            $position = strpos($value, 'create_translations_table');
             if ($position !== false) {
                 return true;
             }
