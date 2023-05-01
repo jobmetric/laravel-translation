@@ -5,10 +5,11 @@ namespace JobMetric\Translation\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use JobMetric\Metadata\Traits\HasMetadata;
 
 class Translation extends Model
 {
-    use HasFactory;
+    use HasFactory, HasMetadata;
 
     protected $fillable = [
         'translatable_id',
