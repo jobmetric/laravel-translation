@@ -10,7 +10,7 @@ class TranslationServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('TranslationService', function ($app) {
-            return new TranslationService;
+            return new TranslationService($app);
         });
     }
 

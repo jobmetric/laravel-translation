@@ -2,11 +2,44 @@
 
 namespace JobMetric\Translation;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use JobMetric\Metadata\MetadataService;
+use JobMetric\Translation\Models\Translation;
 
 class TranslationService
 {
+    /**
+     * The application instance.
+     *
+     * @var Application
+     */
+    protected Application $app;
+
+    /**
+     * The metadata instance.
+     *
+     * @var MetadataService
+     */
+    protected MetadataService $metadataService;
+
+    /**
+     * Create a new Translation instance.
+     *
+     * @param Application $app
+     *
+     * @return void
+     * @throws BindingResolutionException
+     */
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+
+        $this->metadataService = $app->make('MetadataService');
+    }
+
     /**
      * store translation
      *
@@ -20,15 +53,20 @@ class TranslationService
         foreach($data as $locale => $value) {
             if(isset($value['title']) && $value['title'] != '') {
                 $title = $value['title'];
-
                 unset($value['title']);
 
-                $model->translations()->updateOrCreate([
+                /**
+                 * @var Translation $translation
+                 */
+                $translation = $model->translations()->updateOrCreate([
                     'locale' => $locale
                 ], [
-                    'title' => $title,
-                    'data'  => $value
+                    'title' => $title
                 ]);
+
+                foreach($value as $key => $item) {
+                    $this->metadataService->store($translation, $key, $item);
+                }
 
                 foreach($value as $key => $val) {
                     Cache::forget($this->cacheKey($model::class, $model->id, $key, $locale));
@@ -45,13 +83,15 @@ class TranslationService
      *
      * @return mixed
      */
-    public function get(Model $model, string $key): mixed
+    public function get(Model $model, string $key = 'title'): mixed
     {
-        return Cache::rememberForever($this->cacheKey($model::class, $model->id, $key, app()->getLocale()), function () use ($model, $key) {
+        // todo create config for ttl cache
+        return Cache::remember($this->cacheKey($model::class, $model->id, $key, app()->getLocale()), 0, function () use ($model, $key) {
             if($key == 'title') {
                 return $model?->translation->title;
             } else {
-                return $model?->translation?->data?->{$key};
+                // todo add method exist key in metadata
+                return $this->metadataService->get($model?->translation, $key);
             }
         });
     }
@@ -60,7 +100,7 @@ class TranslationService
      * generate cache key
      *
      * @param string $type
-     * @param int $id
+     * @param int    $id
      * @param string $key
      * @param string $local
      *
@@ -68,6 +108,6 @@ class TranslationService
      */
     private function cacheKey(string $type, int $id, string $key, string $local): string
     {
-        return 'translated:' . class_basename($type) . ':' . $id . ':' . $key . ':' . $local;
+        return 'translated:'.class_basename($type).':'.$id.':'.$key.':'.$local;
     }
 }
