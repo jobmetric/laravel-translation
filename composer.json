@@ -20,7 +20,8 @@
     "require": {
         "php": ">=8.0.1",
         "ext-json": "*",
-        "laravel/framework": ">=9.19"
+        "laravel/framework": ">=9.19",
+        "jobmetric/metadata": "*"
     },
     "autoload": {
         "files": [
@@ -40,7 +41,7 @@
             }
         }
     },
-    "minimum-stability" : "stable",
+    "minimum-stability": "stable",
     "support": {
         "issues": "https://github.com/jobmetric/translation/issues",
         "forum": "https://twitter.com/jobmetric",

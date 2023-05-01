@@ -10,7 +10,7 @@ class TranslationServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('TranslationService', function ($app) {
-            return new TranslationService;
+            return new TranslationService($app);
         });
     }
 
@@ -21,6 +21,9 @@ class TranslationServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // set translations
+        $this->loadTranslationsFrom(realpath(__DIR__.'/../../lang'), 'translation');
+
         // publish config
         $this->publishes([
             realpath(__DIR__.'/../../config/config.php') => config_path('translation.php')
