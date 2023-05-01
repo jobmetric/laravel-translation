@@ -85,8 +85,9 @@ class TranslationService
      */
     public function get(Model $model, string $key = 'title'): mixed
     {
-        // todo create config for ttl cache
-        return Cache::remember($this->cacheKey($model::class, $model->id, $key, app()->getLocale()), 0, function () use ($model, $key) {
+        $cache_time = config('translation.cache_time');
+
+        return Cache::remember($this->cacheKey($model::class, $model->id, $key, app()->getLocale()), $cache_time, function () use ($model, $key) {
             if($key == 'title') {
                 return $model?->translation->title;
             } else {
