@@ -91,7 +91,6 @@ class TranslationService
             if($key == 'title') {
                 return $model?->translation->title;
             } else {
-                // todo add method exist key in metadata
                 return $this->metadataService->get($model?->translation, $key);
             }
         });
