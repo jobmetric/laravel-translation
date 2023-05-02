@@ -28,7 +28,7 @@ Copy the `config` file from `vendor/jobmetric/translation/config/config.php` to 
 Run the following command to publish the package config file:
 
 ```bash
-php artisan vendor:publish --provider="JobMetric\Translation\Providers\TranslationServiceProvider" --tag="config"
+php artisan vendor:publish --provider="JobMetric\Translation\Providers\TranslationServiceProvider" --tag="translation-config"
 ```
 
 You should now have a `config/translation.php` file that allows you to configure the basics of this package.
@@ -38,7 +38,7 @@ You should now have a `config/translation.php` file that allows you to configure
 You need to publish the migration to create the `translations` table:
 
 ```php
-php artisan vendor:publish --provider="JobMetric\Translation\Providers\TranslationServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="JobMetric\Translation\Providers\TranslationServiceProvider" --tag="translation-migrations"
 ```
 
 After that, you need to run migrations.
