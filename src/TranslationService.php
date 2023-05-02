@@ -6,8 +6,10 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use JobMetric\Metadata\Exceptions\ModelHasTranslationTraitNotFoundException;
 use JobMetric\Metadata\MetadataService;
 use JobMetric\Translation\Models\Translation;
+use Throwable;
 
 class TranslationService
 {
@@ -47,9 +49,14 @@ class TranslationService
      * @param array $data
      *
      * @return void
+     * @throws Throwable
      */
     public function store(Model $model, array $data = []): void
     {
+        if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
+            throw new ModelHasTranslationTraitNotFoundException($model::class);
+        }
+
         foreach($data as $locale => $value) {
             if(isset($value['title']) && $value['title'] != '') {
                 $title = $value['title'];
@@ -82,16 +89,21 @@ class TranslationService
      * @param string $key
      *
      * @return mixed
+     * @throws Throwable
      */
     public function get(Model $model, string $key = 'title'): mixed
     {
+        if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
+            throw new ModelHasTranslationTraitNotFoundException($model::class);
+        }
+
         $cache_time = config('translation.cache_time');
 
         return Cache::remember($this->cacheKey($model::class, $model->id, $key, app()->getLocale()), $cache_time, function () use ($model, $key) {
             if($key == 'title') {
-                return $model?->translation->title;
+                return $model->translation->title;
             } else {
-                return $this->metadataService->get($model?->translation, $key);
+                return $this->metadataService->get($model->translation, $key);
             }
         });
     }
