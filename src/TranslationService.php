@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use JobMetric\Metadata\Exceptions\ModelHasTranslationTraitNotFoundException;
 use JobMetric\Metadata\MetadataService;
+use JobMetric\Translation\Http\Resources\TranslationResource;
 use JobMetric\Translation\Models\Translation;
 use Throwable;
 
@@ -83,15 +84,16 @@ class TranslationService
     }
 
     /**
-     * get translation filed
+     * get translation field
      *
-     * @param Model  $model
-     * @param string $key
+     * @param Model       $model
+     * @param string|null $key
+     * @param string|null $locale
      *
      * @return mixed
      * @throws Throwable
      */
-    public function get(Model $model, string $key = 'title'): mixed
+    public function get(Model $model, string $key = null, string $locale = null): mixed
     {
         if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
             throw new ModelHasTranslationTraitNotFoundException($model::class);
@@ -99,27 +101,75 @@ class TranslationService
 
         $cache_time = config('translation.cache_time');
 
-        return Cache::remember($this->cacheKey($model::class, $model->id, $key, app()->getLocale()), $cache_time, function () use ($model, $key) {
+        if(is_null($key)) {
+            return Cache::remember($this->cacheKey($model::class, $model->id, $locale), $cache_time, function () use ($model, $key, $locale) {
+                if(is_null($locale)) {
+                    $object = $model->with('translations.metaable')->first();
+                    return TranslationResource::collection($object->translations)->toArray(request());
+                }
+
+                $object = $model->translationTo($locale)->first()?->load('metaable');
+                return TranslationResource::make($object)->toArray(request());
+            });
+        }
+
+        if(is_null($locale)) {
+            $locale = app()->getLocale();
+        }
+
+        return Cache::remember($this->cacheKey($model::class, $model->id, $key, $locale), $cache_time, function () use ($model, $key, $locale) {
             if($key == 'title') {
-                return $model->translation->title;
+                return $model->translationTo($locale)->first()?->title;
             } else {
-                return $this->metadataService->get($model->translation, $key);
+                return $this->metadataService->get($model->translationTo($locale)->first(), $key);
             }
         });
     }
 
     /**
+     * delete translation
+     *
+     * @param Model       $model
+     * @param string|null $locale
+     *
+     * @return Model
+     * @throws Throwable
+     */
+    public function delete(Model $model, string $locale = null): Model
+    {
+        if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
+            throw new ModelHasTranslationTraitNotFoundException($model::class);
+        }
+
+        if(is_null($locale)) {
+            Cache::forget($this->cacheKey($model::class, $model->id));
+
+            $model->translations()->get()->each(function($item){
+                $item->delete();
+            });
+        } else {
+            Cache::forget($this->cacheKey($model::class, $model->id, $locale));
+
+            $model->translationTo($locale)->get()->each(function($item){
+                $item->delete();
+            });
+        }
+
+        return $model;
+    }
+
+    /**
      * generate cache key
      *
-     * @param string $type
-     * @param int    $id
-     * @param string $key
-     * @param string $local
+     * @param string      $type
+     * @param int         $id
+     * @param string|null $locale
+     * @param string|null $key
      *
      * @return string
      */
-    private function cacheKey(string $type, int $id, string $key, string $local): string
+    private function cacheKey(string $type, int $id, string $locale = null, string $key = null): string
     {
-        return 'translated:'.class_basename($type).':'.$id.':'.$key.':'.$local;
+        return 'translation:'.class_basename($type).':'.$id.(is_null($locale) ?: ':'.$locale).(is_null($key) ?: ':'.$key);
     }
 }
