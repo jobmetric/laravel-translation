@@ -19,7 +19,19 @@ trait HasTranslation
      */
     public function translation(): MorphOne
     {
-        return $this->morphOne(Translation::class, 'translatable')->where('locale', app()->getLocale());
+        return $this->morphOne(Translation::class, 'translatable');
+    }
+
+    /**
+     * scope locale for select translations relationship
+     *
+     * @param string $locale
+     *
+     * @return MorphOne
+     */
+    public function translationTo(string $locale): MorphOne
+    {
+        return $this->translation()->where('locale', $locale);
     }
 
     /**
