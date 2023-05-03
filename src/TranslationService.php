@@ -44,47 +44,7 @@ class TranslationService
     }
 
     /**
-     * store translation
-     *
-     * @param Model $model
-     * @param array $data
-     *
-     * @return void
-     * @throws Throwable
-     */
-    public function store(Model $model, array $data = []): void
-    {
-        if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
-            throw new ModelHasTranslationTraitNotFoundException($model::class);
-        }
-
-        foreach($data as $locale => $value) {
-            if(isset($value['title']) && $value['title'] != '') {
-                $title = $value['title'];
-                unset($value['title']);
-
-                /**
-                 * @var Translation $translation
-                 */
-                $translation = $model->translations()->updateOrCreate([
-                    'locale' => $locale
-                ], [
-                    'title' => $title
-                ]);
-
-                foreach($value as $key => $item) {
-                    $this->metadataService->store($translation, $key, $item);
-                }
-
-                foreach($value as $key => $val) {
-                    Cache::forget($this->cacheKey($model::class, $model->id, $key, $locale));
-                }
-            }
-        }
-    }
-
-    /**
-     * get translation field
+     * get translation
      *
      * @param Model       $model
      * @param string|null $key
@@ -124,6 +84,46 @@ class TranslationService
                 return $this->metadataService->get($model->translationTo($locale)->first(), $key);
             }
         });
+    }
+
+    /**
+     * store translation
+     *
+     * @param Model $model
+     * @param array $data
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public function store(Model $model, array $data = []): void
+    {
+        if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
+            throw new ModelHasTranslationTraitNotFoundException($model::class);
+        }
+
+        foreach($data as $locale => $value) {
+            if(isset($value['title']) && $value['title'] != '') {
+                $title = $value['title'];
+                unset($value['title']);
+
+                /**
+                 * @var Translation $translation
+                 */
+                $translation = $model->translations()->updateOrCreate([
+                    'locale' => $locale
+                ], [
+                    'title' => $title
+                ]);
+
+                foreach($value as $key => $item) {
+                    $this->metadataService->store($translation, $key, $item);
+                }
+
+                foreach($value as $key => $val) {
+                    Cache::forget($this->cacheKey($model::class, $model->id, $key, $locale));
+                }
+            }
+        }
     }
 
     /**
