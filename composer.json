@@ -3,6 +3,15 @@
     "description": "This is a package for translating the contents of different Laravel projects.",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "laravel",
+        "jobmetric",
+        "package",
+        "translation",
+        "translatable",
+        "model"
+    ],
+    "homepage": "https://doc.jobmetric.net/package/translation",
     "authors": [
         {
             "name": "Majid Mohammadian",
@@ -23,6 +32,10 @@
         "laravel/framework": ">=9.19",
         "jobmetric/metadata": "*"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "pestphp/pest": "^1.2",
+    },
     "autoload": {
         "files": [
             "src/helpers.php"
@@ -30,6 +43,15 @@
         "psr-4": {
             "JobMetric\\Translation\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JobMetric\\Translation\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest --colors=always",
+        "test-coverage": "vendor/bin/pest --coverage-html coverage"
     },
     "extra": {
         "laravel": {
@@ -46,5 +68,15 @@
         "issues": "https://github.com/jobmetric/translation/issues",
         "forum": "https://twitter.com/jobmetric",
         "source": "https://github.com/jobmetric/translation"
-    }
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/majidmohammadian"
+        },
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/alirezamires"
+        }
+    ]
 }
