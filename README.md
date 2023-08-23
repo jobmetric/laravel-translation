@@ -18,7 +18,7 @@ Add the service provider to the providers array in the config/app.php config fil
 
     ...
 
-    JobMetric\Translation\Providers\TranslationServiceProvider::class,
+    JobMetric\Translation\TranslationServiceProvider::class,
 ]
 ```
 
@@ -28,7 +28,7 @@ Copy the `config` file from `vendor/jobmetric/translation/config/config.php` to 
 Run the following command to publish the package config file:
 
 ```bash
-php artisan vendor:publish --provider="JobMetric\Translation\Providers\TranslationServiceProvider" --tag="translation-config"
+php artisan vendor:publish --provider="JobMetric\Translation\TranslationServiceProvider" --tag="translation-config"
 ```
 
 You should now have a `config/translation.php` file that allows you to configure the basics of this package.
@@ -38,7 +38,7 @@ You should now have a `config/translation.php` file that allows you to configure
 You need to publish the migration to create the `translations` table:
 
 ```php
-php artisan vendor:publish --provider="JobMetric\Translation\Providers\TranslationServiceProvider" --tag="translation-migrations"
+php artisan vendor:publish --provider="JobMetric\Translation\TranslationServiceProvider" --tag="translation-migrations"
 ```
 
 After that, you need to run migrations.

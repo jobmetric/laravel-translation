@@ -1,6 +1,6 @@
 <?php
 
-namespace JobMetric\Metadata\Exceptions;
+namespace JobMetric\Translation\Exceptions;
 
 use Exception;
 use Throwable;

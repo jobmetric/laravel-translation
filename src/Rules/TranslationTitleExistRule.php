@@ -37,6 +37,6 @@ class TranslationTitleExistRule implements Rule
      */
     public function message(): string
     {
-        return trans('translation::base.rule.exist_title');
+        return trans('j-translation::base.rule.exist_title');
     }
 }
