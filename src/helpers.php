@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
-use JobMetric\Translation\TranslationService;
+use JobMetric\Translation\JTranslation;
 
 if(!function_exists('translation')) {
     /**
@@ -11,9 +11,10 @@ if(!function_exists('translation')) {
      * @param array $data
      *
      * @return void
+     * @throws Throwable
      */
-    function translation(Model $model, array $data = []): string
+    function translation(Model $model, array $data = []): void
     {
-        return TranslationService::store($model, $data);
+        JTranslation::store($model, $data);
     }
 }

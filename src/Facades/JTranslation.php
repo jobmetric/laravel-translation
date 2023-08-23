@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void store(Model $model, array $data = [])
  * @method static void delete(Model $model, string $locale = null)
  *
- * @see \JobMetric\Translation\TranslationService
+ * @see \JobMetric\Translation\JTranslation
  */
 class JTranslation extends Facade
 {
@@ -21,6 +21,6 @@ class JTranslation extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'TranslationService';
+        return 'JTranslation';
     }
 }

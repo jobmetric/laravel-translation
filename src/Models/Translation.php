@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use JobMetric\Metadata\Traits\HasMetadata;
-use Metadata;
+use JMetadata;
 
 class Translation extends Model
 {
@@ -24,7 +24,7 @@ class Translation extends Model
         parent::boot();
 
         static::deleting(function (Translation $translation) {
-            Metadata::delete($translation);
+            JMetadata::delete($translation);
         });
     }
 

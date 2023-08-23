@@ -7,12 +7,12 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use JobMetric\Translation\Exceptions\ModelHasTranslationTraitNotFoundException;
-use JobMetric\Metadata\MetadataService;
+use JobMetric\Metadata\JMetadata;
 use JobMetric\Translation\Http\Resources\TranslationResource;
 use JobMetric\Translation\Models\Translation;
 use Throwable;
 
-class TranslationService
+class JTranslation
 {
     /**
      * The application instance.
@@ -24,9 +24,9 @@ class TranslationService
     /**
      * The metadata instance.
      *
-     * @var MetadataService
+     * @var JMetadata
      */
-    protected MetadataService $metadataService;
+    protected JMetadata $metadataService;
 
     /**
      * Create a new Translation instance.
@@ -40,7 +40,7 @@ class TranslationService
     {
         $this->app = $app;
 
-        $this->metadataService = $app->make('JMetadata');
+        $this->jmetadata = $app->make('JMetadata');
     }
 
     /**
@@ -81,7 +81,7 @@ class TranslationService
             if($key == 'title') {
                 return $model->translationTo($locale)->first()?->title;
             } else {
-                return $this->metadataService->get($model->translationTo($locale)->first(), $key);
+                return $this->jmetadata->get($model->translationTo($locale)->first(), $key);
             }
         });
     }
@@ -116,7 +116,7 @@ class TranslationService
                 ]);
 
                 foreach($value as $key => $item) {
-                    $this->metadataService->store($translation, $key, $item);
+                    $this->jmetadata->store($translation, $key, $item);
 
                     Cache::forget($this->cacheKey($model::class, $model->id, $locale));
                     Cache::forget($this->cacheKey($model::class, $model->id, $locale, $key));
