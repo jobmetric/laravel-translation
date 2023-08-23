@@ -5,10 +5,11 @@ namespace JobMetric\Translation\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use JobMetric\Metadata\Traits\HasMetadata;
+use JobMetric\Metadata\HasMetadata;
 use JMetadata;
+use JobMetric\Metadata\MetadataInterface;
 
-class Translation extends Model
+class Translation extends Model implements MetadataInterface
 {
     use HasFactory, HasMetadata;
 
@@ -36,5 +37,10 @@ class Translation extends Model
     public function translatable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function allowMetadataFields(): array
+    {
+        return [];
     }
 }
