@@ -59,7 +59,7 @@
                 "JobMetric\\Translation\\TranslationServiceProvider"
             ],
             "aliases": {
-                "JTranslation": "JobMetric\\Translation\\Facades\\TranslationService"
+                "JTranslation": "JobMetric\\Translation\\Facades\\JTranslation"
             }
         }
     },
