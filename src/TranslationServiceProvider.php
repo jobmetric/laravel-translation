@@ -10,7 +10,7 @@ class TranslationServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('JTranslation', function ($app) {
-            return new TranslationService($app);
+            return new JTranslation($app);
         });
 
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'j-translation');
