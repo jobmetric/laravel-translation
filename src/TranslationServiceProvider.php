@@ -1,20 +1,19 @@
 <?php
 
-namespace JobMetric\Translation\Providers;
+namespace JobMetric\Translation;
 
 use Illuminate\Support\ServiceProvider;
-use JobMetric\Metadata\Providers\MetadataServiceProvider;
-use JobMetric\Translation\TranslationService;
+use JobMetric\Metadata\MetadataServiceProvider;
 
 class TranslationServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind('TranslationService', function ($app) {
+        $this->app->bind('JTranslation', function ($app) {
             return new TranslationService($app);
         });
 
-        $this->mergeConfigFrom(__DIR__.'/../../config/config.php', 'translation');
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'j-translation');
     }
 
     /**
@@ -28,7 +27,7 @@ class TranslationServiceProvider extends ServiceProvider
         $this->registerPublishables();
 
         // set translations
-        $this->loadTranslationsFrom(realpath(__DIR__.'/../../lang'), 'translation');
+        $this->loadTranslationsFrom(realpath(__DIR__.'/../lang'), 'j-translation');
     }
 
     /**
@@ -39,7 +38,7 @@ class TranslationServiceProvider extends ServiceProvider
     protected function registerMigrations(): void
     {
         if($this->app->runningInConsole()) {
-            $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         }
     }
 
@@ -56,12 +55,12 @@ class TranslationServiceProvider extends ServiceProvider
 
             // publish config
             $this->publishes([
-                realpath(__DIR__.'/../../config/config.php') => config_path('translation.php')
+                realpath(__DIR__.'/../config/config.php') => config_path('j-translation.php')
             ], 'translation-config');
 
             // publish migration
             $this->publishes([
-                realpath(__DIR__.'/../../database/migrations') => database_path('migrations')
+                realpath(__DIR__.'/../database/migrations') => database_path('migrations')
             ], 'translation-migrations');
         }
     }

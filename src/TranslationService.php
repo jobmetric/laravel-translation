@@ -6,7 +6,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
-use JobMetric\Metadata\Exceptions\ModelHasTranslationTraitNotFoundException;
+use JobMetric\Translation\Exceptions\ModelHasTranslationTraitNotFoundException;
 use JobMetric\Metadata\MetadataService;
 use JobMetric\Translation\Http\Resources\TranslationResource;
 use JobMetric\Translation\Models\Translation;
@@ -40,7 +40,7 @@ class TranslationService
     {
         $this->app = $app;
 
-        $this->metadataService = $app->make('MetadataService');
+        $this->metadataService = $app->make('JMetadata');
     }
 
     /**
@@ -59,7 +59,7 @@ class TranslationService
             throw new ModelHasTranslationTraitNotFoundException($model::class);
         }
 
-        $cache_time = config('translation.cache_time');
+        $cache_time = config('j-translation.cache_time');
 
         if(is_null($key)) {
             return Cache::remember($this->cacheKey($model::class, $model->id, $locale), $cache_time, function () use ($model, $key, $locale) {
@@ -77,7 +77,7 @@ class TranslationService
             $locale = app()->getLocale();
         }
 
-        return Cache::remember($this->cacheKey($model::class, $model->id, $key, $locale), $cache_time, function () use ($model, $key, $locale) {
+        return Cache::remember($this->cacheKey($model::class, $model->id, $locale, $key), $cache_time, function () use ($model, $key, $locale) {
             if($key == 'title') {
                 return $model->translationTo($locale)->first()?->title;
             } else {
@@ -117,10 +117,9 @@ class TranslationService
 
                 foreach($value as $key => $item) {
                     $this->metadataService->store($translation, $key, $item);
-                }
 
-                foreach($value as $key => $val) {
-                    Cache::forget($this->cacheKey($model::class, $model->id, $key, $locale));
+                    Cache::forget($this->cacheKey($model::class, $model->id, $locale));
+                    Cache::forget($this->cacheKey($model::class, $model->id, $locale, $key));
                 }
             }
         }

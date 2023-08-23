@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @see \JobMetric\Translation\TranslationService
  */
-class TranslationService extends Facade
+class JTranslation extends Facade
 {
     /**
      * Get the registered name of the component.
