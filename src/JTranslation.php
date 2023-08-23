@@ -26,7 +26,7 @@ class JTranslation
      *
      * @var JMetadata
      */
-    protected JMetadata $metadataService;
+    protected JMetadata $JMetadata;
 
     /**
      * Create a new Translation instance.
@@ -40,7 +40,7 @@ class JTranslation
     {
         $this->app = $app;
 
-        $this->jmetadata = $app->make('JMetadata');
+        $this->JMetadata = $app->make('JMetadata');
     }
 
     /**
@@ -81,7 +81,7 @@ class JTranslation
             if($key == 'title') {
                 return $model->translationTo($locale)->first()?->title;
             } else {
-                return $this->jmetadata->get($model->translationTo($locale)->first(), $key);
+                return $this->JMetadata->get($model->translationTo($locale)->first(), $key);
             }
         });
     }
@@ -116,7 +116,7 @@ class JTranslation
                 ]);
 
                 foreach($value as $key => $item) {
-                    $this->jmetadata->store($translation, $key, $item);
+                    $this->JMetadata->store($translation, $key, $item);
 
                     Cache::forget($this->cacheKey($model::class, $model->id, $locale));
                     Cache::forget($this->cacheKey($model::class, $model->id, $locale, $key));
