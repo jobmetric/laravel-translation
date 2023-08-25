@@ -39,6 +39,11 @@ class Translation extends Model implements MetadataInterface
         return $this->morphTo();
     }
 
+    /**
+     * allow metadata fields.
+     *
+     * @return array
+     */
     public function allowMetadataFields(): array
     {
         return [];

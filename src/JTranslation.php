@@ -55,7 +55,7 @@ class JTranslation
      */
     public function get(Model $model, string $key = null, string $locale = null): mixed
     {
-        if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
+        if(!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
             throw new ModelHasTranslationTraitNotFoundException($model::class);
         }
 
@@ -97,7 +97,7 @@ class JTranslation
      */
     public function store(Model $model, array $data = []): void
     {
-        if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
+        if(!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
             throw new ModelHasTranslationTraitNotFoundException($model::class);
         }
 
@@ -136,7 +136,7 @@ class JTranslation
      */
     public function delete(Model $model, string $locale = null): Model
     {
-        if(!in_array('JobMetric\Translation\Traits\HasTranslation', class_uses($model))) {
+        if(!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
             throw new ModelHasTranslationTraitNotFoundException($model::class);
         }
 
