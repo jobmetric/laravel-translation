@@ -81,7 +81,13 @@ class JTranslation
             if($key == 'title') {
                 return $model->translationTo($locale)->first()?->title;
             } else {
-                return $this->JMetadata->get($model->translationTo($locale)->first(), $key);
+                /**
+                 * @var Translation $translation
+                 */
+                $translation = $model->translationTo($locale)->first();
+                $translation->setAttribute('instance', $model);
+
+                return $this->JMetadata->get($translation, $key);
             }
         });
     }
