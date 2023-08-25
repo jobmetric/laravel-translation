@@ -1,10 +1,13 @@
 <?php
 
-namespace JobMetric\Translation\Traits;
+namespace JobMetric\Translation;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use JobMetric\Translation\Exceptions\ModelTranslationInterfaceNotFoundException;
 use JobMetric\Translation\Models\Translation;
+use Throwable;
 
 /**
  * @method morphOne(string $class, string $string)
@@ -12,6 +15,21 @@ use JobMetric\Translation\Models\Translation;
  */
 trait HasTranslation
 {
+    /**
+     * boot has translation
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public static function bootHasTranslation(): void
+    {
+        static::retrieved(function (Model $model) {
+            if(!in_array('JobMetric\Translation\TranslationInterface', class_implements($model))) {
+                throw new ModelTranslationInterfaceNotFoundException($model::class);
+            }
+        });
+    }
+
     /**
      * translation has one relationship
      *
