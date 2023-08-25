@@ -115,6 +115,8 @@ class JTranslation
                     'title' => $title
                 ]);
 
+                $translation->setAttribute('instance', $model);
+
                 foreach($value as $key => $item) {
                     $this->JMetadata->store($translation, $key, $item);
 
@@ -143,13 +145,15 @@ class JTranslation
         if(is_null($locale)) {
             Cache::forget($this->cacheKey($model::class, $model->id));
 
-            $model->translations()->get()->each(function($item){
+            $model->translations()->get()->each(function(Translation $item) use ($model) {
+                $item->setAttribute('instance', $model);
                 $item->delete();
             });
         } else {
             Cache::forget($this->cacheKey($model::class, $model->id, $locale));
 
-            $model->translationTo($locale)->get()->each(function($item){
+            $model->translationTo($locale)->get()->each(function(Translation $item) use ($model) {
+                $item->setAttribute('instance', $model);
                 $item->delete();
             });
         }

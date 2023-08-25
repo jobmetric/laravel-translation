@@ -9,6 +9,9 @@ use JobMetric\Metadata\HasMetadata;
 use JMetadata;
 use JobMetric\Metadata\MetadataInterface;
 
+/**
+ * @property Model instance
+ */
 class Translation extends Model implements MetadataInterface
 {
     use HasFactory, HasMetadata;
@@ -46,6 +49,6 @@ class Translation extends Model implements MetadataInterface
      */
     public function allowMetadataFields(): array
     {
-        return [];
+        return $this->instance?->allowTranslationFields();
     }
 }
