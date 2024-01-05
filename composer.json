@@ -1,5 +1,5 @@
 {
-    "name": "jobmetric/translation",
+    "name": "jobmetric/laravel-translation",
     "description": "This is a package for translating the contents of different Laravel projects.",
     "type": "library",
     "license": "MIT",
@@ -11,18 +11,12 @@
         "translatable",
         "model"
     ],
-    "homepage": "https://doc.jobmetric.net/package/translation",
+    "homepage": "https://doc.jobmetric.net/package/laravel-translation",
     "authors": [
         {
             "name": "Majid Mohammadian",
             "email": "majeedmohammadian@gmail.com",
             "homepage": "https://www.linkedin.com/in/majidmohammadian/",
-            "role": "Full Stack Developer"
-        },
-        {
-            "name": "Alireza Mir Esmaili",
-            "email": "alirezamires@gmail.com",
-            "homepage": "https://www.linkedin.com/in/alirezamires/",
             "role": "Full Stack Developer"
         }
     ],
@@ -30,23 +24,16 @@
         "php": ">=8.0.1",
         "ext-json": "*",
         "laravel/framework": ">=9.19",
+        "jobmetric/laravel-package-core": "^1.2",
         "jobmetric/metadata": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^9.6",
-        "pestphp/pest": "^1.2"
     },
     "autoload": {
         "files": [
             "src/helpers.php"
         ],
         "psr-4": {
-            "JobMetric\\Translation\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "JobMetric\\Translation\\Tests\\": "tests/"
+            "JobMetric\\Translation\\": "src/",
+            "JobMetric\\Setting\\Factories\\": "database/factories/"
         }
     },
     "scripts": {
@@ -59,24 +46,14 @@
                 "JobMetric\\Translation\\TranslationServiceProvider"
             ],
             "aliases": {
-                "JTranslation": "JobMetric\\Translation\\Facades\\JTranslation"
+                "Translation": "Translation"
             }
         }
     },
     "minimum-stability": "stable",
     "support": {
-        "issues": "https://github.com/jobmetric/translation/issues",
+        "issues": "https://github.com/jobmetric/laravel-translation/issues",
         "forum": "https://twitter.com/jobmetric",
-        "source": "https://github.com/jobmetric/translation"
-    },
-    "funding": [
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/majidmohammadian"
-        },
-        {
-            "type": "github",
-            "url": "https://github.com/sponsors/alirezamires"
-        }
-    ]
+        "source": "https://github.com/jobmetric/laravel-translation"
+    }
 }
