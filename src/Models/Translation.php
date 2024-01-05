@@ -32,6 +32,11 @@ class Translation extends Model implements MetadataInterface
         });
     }
 
+    public function getTable()
+    {
+        return config('translation.tables.translation', parent::getTable());
+    }
+
     /**
      * translatable relationship
      *

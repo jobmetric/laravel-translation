@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('translations', function (Blueprint $table) {
+        Schema::create(config('translation.tables.translation'), function (Blueprint $table) {
             $table->id();
 
             $table->morphs('translatable');
@@ -35,6 +35,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('translations');
+        Schema::dropIfExists(config('translation.tables.translation'));
     }
 };
