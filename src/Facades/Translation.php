@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static void store(Model $model, array $data = [])
  * @method static void delete(Model $model, string $locale = null)
  *
- * @see \JobMetric\Translation\JTranslation
+ * @see \JobMetric\Translation\Translation
  */
-class JTranslation extends Facade
+class Translation extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -21,6 +21,6 @@ class JTranslation extends Facade
      */
     protected static function getFacadeAccessor(): string
     {
-        return 'JTranslation';
+        return 'Translation';
     }
 }

@@ -7,12 +7,12 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use JobMetric\Translation\Exceptions\ModelHasTranslationTraitNotFoundException;
-use JobMetric\Metadata\JMetadata;
+use JobMetric\Metadata\Metadata;
 use JobMetric\Translation\Http\Resources\TranslationResource;
-use JobMetric\Translation\Models\Translation;
+use JobMetric\Translation\Models\Translation as TranslationModel;
 use Throwable;
 
-class JTranslation
+class Translation
 {
     /**
      * The application instance.
@@ -24,9 +24,9 @@ class JTranslation
     /**
      * The metadata instance.
      *
-     * @var JMetadata
+     * @var Metadata
      */
-    protected JMetadata $JMetadata;
+    protected Metadata $Metadata;
 
     /**
      * Create a new Translation instance.
@@ -40,7 +40,7 @@ class JTranslation
     {
         $this->app = $app;
 
-        $this->JMetadata = $app->make('JMetadata');
+        $this->Metadata = $app->make('Metadata');
     }
 
     /**
@@ -59,7 +59,7 @@ class JTranslation
             throw new ModelHasTranslationTraitNotFoundException($model::class);
         }
 
-        $cache_time = config('j-translation.cache_time');
+        $cache_time = config('translation.cache_time');
 
         if(is_null($key)) {
             return Cache::remember($this->cacheKey($model::class, $model->id, $locale), $cache_time, function () use ($model, $key, $locale) {
@@ -82,12 +82,12 @@ class JTranslation
                 return $model->translationTo($locale)->first()?->title;
             } else {
                 /**
-                 * @var Translation $translation
+                 * @var TranslationModel $translation
                  */
                 $translation = $model->translationTo($locale)->first();
                 $translation->setAttribute('instance', $model);
 
-                return $this->JMetadata->get($translation, $key);
+                return $this->Metadata->get($translation, $key);
             }
         });
     }
@@ -113,7 +113,7 @@ class JTranslation
                 unset($value['title']);
 
                 /**
-                 * @var Translation $translation
+                 * @var TranslationModel $translation
                  */
                 $translation = $model->translations()->updateOrCreate([
                     'locale' => $locale
@@ -124,7 +124,7 @@ class JTranslation
                 $translation->setAttribute('instance', $model);
 
                 foreach($value as $key => $item) {
-                    $this->JMetadata->store($translation, $key, $item);
+                    $this->Metadata->store($translation, $key, $item);
 
                     Cache::forget($this->cacheKey($model::class, $model->id, $locale));
                     Cache::forget($this->cacheKey($model::class, $model->id, $locale, $key));
