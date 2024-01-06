@@ -2,7 +2,6 @@
 
 namespace JobMetric\Translation;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use JobMetric\Translation\Exceptions\ModelTranslationContractNotFoundException;
@@ -40,6 +39,16 @@ trait HasTranslation
     }
 
     /**
+     * translation has many relationship
+     *
+     * @return MorphMany
+     */
+    public function translations(): MorphMany
+    {
+        return $this->morphMany(Translation::class, 'translatable');
+    }
+
+    /**
      * scope locale for select translations relationship
      *
      * @param string $locale
@@ -49,16 +58,6 @@ trait HasTranslation
     public function translationTo(string $locale): MorphOne
     {
         return $this->translation()->where('locale', $locale);
-    }
-
-    /**
-     * translation has many relationship
-     *
-     * @return MorphMany
-     */
-    public function translations(): MorphMany
-    {
-        return $this->morphMany(Translation::class, 'translatable');
     }
 
     /**
@@ -85,7 +84,7 @@ trait HasTranslation
     public function translate(string $locale, array $data): static
     {
         foreach ($data as $key => $value) {
-            if(in_array($key, $this->translationAllowFields())) {
+            if (in_array($key, $this->translationAllowFields())) {
                 $this->translation()->updateOrCreate([
                     'locale' => $locale,
                     'key' => $key,
@@ -96,6 +95,42 @@ trait HasTranslation
                 throw new TranslationDisallowFieldException(self::class, $key);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * with translation
+     *
+     * @param string $locale
+     * @param string $key
+     *
+     * @return static
+     */
+    public function withTranslation(string $locale, string $key): static
+    {
+        $this->load(['translation' => function ($query) use ($locale, $key) {
+            $query->where([
+                'locale' => $locale,
+                'key' => $key
+            ]);
+        }]);
+
+        return $this;
+    }
+
+    /**
+     * with translations
+     *
+     * @param string $locale
+     *
+     * @return static
+     */
+    public function withTranslations(string $locale): static
+    {
+        $this->load(['translations' => function ($query) use ($locale) {
+            $query->where('locale', $locale);
+        }]);
 
         return $this;
     }
