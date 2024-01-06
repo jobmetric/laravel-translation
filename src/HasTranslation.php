@@ -100,7 +100,7 @@ trait HasTranslation
     }
 
     /**
-     * with translation
+     * load translation after model loaded
      *
      * @param string $locale
      * @param string $key
@@ -120,7 +120,7 @@ trait HasTranslation
     }
 
     /**
-     * with translations
+     * load translations after model loaded
      *
      * @param string $locale
      *
