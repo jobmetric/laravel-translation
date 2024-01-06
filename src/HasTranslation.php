@@ -2,9 +2,11 @@
 
 namespace JobMetric\Translation;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use JobMetric\Translation\Exceptions\ModelTranslationInterfaceNotFoundException;
+use JobMetric\Translation\Exceptions\ModelTranslationContractNotFoundException;
+use JobMetric\Translation\Exceptions\TranslationDisallowFieldException;
 use JobMetric\Translation\Models\Translation;
 use Throwable;
 
@@ -22,8 +24,8 @@ trait HasTranslation
      */
     public static function bootHasTranslation(): void
     {
-        if (!in_array('JobMetric\Translation\TranslationInterface', class_implements(self::class))) {
-            throw new ModelTranslationInterfaceNotFoundException(self::class);
+        if (!in_array('JobMetric\Translation\Contracts\TranslationContract', class_implements(self::class))) {
+            throw new ModelTranslationContractNotFoundException(self::class);
         }
     }
 
@@ -57,5 +59,44 @@ trait HasTranslation
     public function translations(): MorphMany
     {
         return $this->morphMany(Translation::class, 'translatable');
+    }
+
+    /**
+     * scope locale for select translations relationship
+     *
+     * @param string $locale
+     *
+     * @return MorphMany
+     */
+    public function translationsTo(string $locale): MorphMany
+    {
+        return $this->translations()->where('locale', $locale);
+    }
+
+    /**
+     * add translate
+     *
+     * @param string $locale
+     * @param array $data
+     *
+     * @return static
+     * @throws TranslationDisallowFieldException
+     */
+    public function translate(string $locale, array $data): static
+    {
+        foreach ($data as $key => $value) {
+            if(in_array($key, $this->translationAllowFields())) {
+                $this->translation()->updateOrCreate([
+                    'locale' => $locale,
+                    'key' => $key,
+                ], [
+                    'value' => $value,
+                ]);
+            } else {
+                throw new TranslationDisallowFieldException(self::class, $key);
+            }
+        }
+
+        return $this;
     }
 }
