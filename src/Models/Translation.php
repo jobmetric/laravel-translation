@@ -20,7 +20,8 @@ class Translation extends Model implements MetadataInterface
         'translatable_id',
         'translatable_type',
         'locale',
-        'title'
+        'key',
+        'value'
     ];
 
     protected static function boot(): void

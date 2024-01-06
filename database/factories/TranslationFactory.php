@@ -1,6 +1,6 @@
 <?php
 
-namespace JobMetric\Metadata\Factories;
+namespace JobMetric\Translation\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JobMetric\Translation\Models\Translation;
@@ -22,8 +22,9 @@ class TranslationFactory extends Factory
         return [
             'translatable_id' => null,
             'translatable_type' => null,
-            'locale' => $this->faker->word,
-            'title' => $this->faker->word
+            'locale' => 'en',
+            'key' => 'title',
+            'value' => $this->faker->words
         ];
     }
 
@@ -58,16 +59,30 @@ class TranslationFactory extends Factory
     }
 
     /**
-     * set title
+     * set key
      *
-     * @param string $title
+     * @param string $key
      *
      * @return static
      */
-    public function setTitle(string $title): static
+    public function setKey(string $key): static
     {
         return $this->state(fn(array $attributes) => [
-            'title' => $title
+            'key' => $key
+        ]);
+    }
+
+    /**
+     * set value
+     *
+     * @param string $value
+     *
+     * @return static
+     */
+    public function setValue(string $value): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'value' => $value
         ]);
     }
 }
