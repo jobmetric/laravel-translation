@@ -6,7 +6,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
-use JobMetric\Translation\Exceptions\ModelHasTranslationTraitNotFoundException;
+use JobMetric\Translation\Exceptions\ModelHasTranslationNotFoundException;
 use JobMetric\Metadata\Metadata;
 use JobMetric\Translation\Http\Resources\TranslationResource;
 use JobMetric\Translation\Models\Translation as TranslationModel;
@@ -56,7 +56,7 @@ class Translation
     public function get(Model $model, string $key = null, string $locale = null): mixed
     {
         if(!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
-            throw new ModelHasTranslationTraitNotFoundException($model::class);
+            throw new ModelHasTranslationNotFoundException($model::class);
         }
 
         $cache_time = config('translation.cache_time');
@@ -104,7 +104,7 @@ class Translation
     public function store(Model $model, array $data = []): void
     {
         if(!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
-            throw new ModelHasTranslationTraitNotFoundException($model::class);
+            throw new ModelHasTranslationNotFoundException($model::class);
         }
 
         foreach($data as $locale => $value) {
@@ -145,7 +145,7 @@ class Translation
     public function delete(Model $model, string $locale = null): Model
     {
         if(!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
-            throw new ModelHasTranslationTraitNotFoundException($model::class);
+            throw new ModelHasTranslationNotFoundException($model::class);
         }
 
         if(is_null($locale)) {
