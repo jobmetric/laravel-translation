@@ -12,7 +12,6 @@ use JsonSerializable;
 /**
  * @property mixed $locale
  * @property mixed $title
- * @property mixed $metaable
  */
 class TranslationResource extends JsonResource
 {
@@ -29,18 +28,10 @@ class TranslationResource extends JsonResource
             return [];
         }
 
-        try {
-            $metadata = $this->whenLoaded('metaable', function () use ($request) {
-                return MetadataResource::collection($this->metaable)?->toArray($request);
-            });
-        } catch(Throwable $throwable) {
-            $metadata = [];
-        }
-
         return [
-            $this->locale => array_merge([
+            $this->locale => [
                 'title' => $this->title
-            ], ...$metadata)
+            ]
         ];
     }
 }

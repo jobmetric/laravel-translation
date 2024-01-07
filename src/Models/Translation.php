@@ -12,9 +12,9 @@ use JobMetric\Metadata\MetadataInterface;
 /**
  * @property Model instance
  */
-class Translation extends Model implements MetadataInterface
+class Translation extends Model
 {
-    use HasFactory, HasMetadata;
+    use HasFactory;
 
     protected $fillable = [
         'translatable_id',
@@ -46,15 +46,5 @@ class Translation extends Model implements MetadataInterface
     public function translatable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    /**
-     * allow metadata fields.
-     *
-     * @return array
-     */
-    public function allowMetadataFields(): array
-    {
-        return $this->instance?->allowTranslationFields();
     }
 }

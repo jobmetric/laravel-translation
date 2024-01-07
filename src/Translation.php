@@ -53,11 +53,11 @@ class Translation
         if (is_null($key)) {
             return Cache::remember($this->cacheKey($model::class, $model->id, $locale), $cache_time, function () use ($model, $key, $locale) {
                 if (is_null($locale)) {
-                    $object = $model->with('translations.metaable')->first();
+                    $object = $model->first();
                     return TranslationResource::collection($object->translations)->toArray(request());
                 }
 
-                $object = $model->translationTo($locale)->first()?->load('metaable');
+                $object = $model->translationTo($locale)->first();
                 return TranslationResource::make($object)->toArray(request());
             });
         }
