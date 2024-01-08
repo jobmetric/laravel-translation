@@ -110,15 +110,19 @@ trait HasTranslation
     /**
      * load translations after model loaded
      *
-     * @param string $locale
+     * @param string|null $locale
      *
      * @return static
      */
-    public function withTranslations(string $locale): static
+    public function withTranslations(string $locale = null): static
     {
-        $this->load(['translations' => function ($query) use ($locale) {
-            $query->where('locale', $locale);
-        }]);
+        if (is_null($locale)) {
+            $this->load('translations');
+        } else {
+            $this->load(['translations' => function ($query) use ($locale) {
+                $query->where('locale', $locale);
+            }]);
+        }
 
         return $this;
     }
