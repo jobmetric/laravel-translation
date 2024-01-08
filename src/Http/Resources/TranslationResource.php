@@ -2,16 +2,15 @@
 
 namespace JobMetric\Translation\Http\Resources;
 
-use Throwable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use JobMetric\Metadata\Http\Resources\MetadataResource;
 use JsonSerializable;
 
 /**
- * @property mixed $locale
- * @property mixed $title
+ * @property mixed locale
+ * @property mixed key
+ * @property mixed value
  */
 class TranslationResource extends JsonResource
 {
@@ -22,16 +21,16 @@ class TranslationResource extends JsonResource
      *
      * @return array|Arrayable|JsonSerializable
      */
-    public function toArray($request): array|Arrayable|JsonSerializable
+    public function toArray(Request $request): array|Arrayable|JsonSerializable
     {
-        if(is_null($this->resource)){
+        if (is_null($this->resource)) {
             return [];
         }
 
         return [
-            $this->locale => [
-                'title' => $this->title
-            ]
+            'locale' => $this->locale,
+            'key' => $this->key,
+            'value' => $this->value
         ];
     }
 }
