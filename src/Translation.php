@@ -146,6 +146,24 @@ class Translation
     }
 
     /**
+     * get field in locale
+     *
+     * @param $model
+     * @param string $key
+     * @param string|null $locale
+     *
+     * @return string
+     */
+    public function getField($model, string $key = 'title', string $locale = null): string
+    {
+        if(is_null($locale)) {
+            $locale = app()->getLocale();
+        }
+
+        return $model->translations->where('locale', $locale)->where('key', $key)->first()->value ?? '';
+    }
+
+    /**
      * generate cache key
      *
      * @param string $type
