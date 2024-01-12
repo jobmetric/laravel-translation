@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
-use JobMetric\Translation\Translation;
+use JobMetric\Translation\Exceptions\ModelHasTranslationNotFoundException;
 
-if(!function_exists('translation')) {
+if (!function_exists('translation')) {
     /**
-     * Service store translation
+     * store translation
      *
      * @param Model $model
      * @param array $data
@@ -15,6 +15,12 @@ if(!function_exists('translation')) {
      */
     function translation(Model $model, array $data = []): void
     {
-        Translation::store($model, $data);
+        if (!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
+            throw new ModelHasTranslationNotFoundException($model::class);
+        }
+
+        foreach ($data as $locale => $item) {
+            $model->translate($locale, $item);
+        }
     }
 }
