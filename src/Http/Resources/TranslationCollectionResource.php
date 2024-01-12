@@ -12,6 +12,8 @@ use JsonSerializable;
  */
 class TranslationCollectionResource extends JsonResource
 {
+    private ?string $locale = null;
+
     /**
      * Transform the resource into an array.
      *
@@ -21,8 +23,27 @@ class TranslationCollectionResource extends JsonResource
      */
     public function toArray(Request $request): array|Arrayable|JsonSerializable
     {
-        return $this->translations->groupBy('locale')->map(function ($translations) {
+        $query = $this->translations;
+
+        if ($this->locale) {
+            return $query->where('locale', $this->locale)->pluck('value', 'key')->all();
+        }
+
+        return $query->groupBy('locale')->map(function ($translations) {
             return $translations->pluck('value', 'key');
         });
+    }
+
+    /**
+     * add locale
+     *
+     * @param string $locale
+     * @return $this
+     */
+    public function withLocale(string $locale): self
+    {
+        $this->locale = $locale;
+
+        return $this;
     }
 }
