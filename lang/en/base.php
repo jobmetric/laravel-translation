@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Base Translation Language Lines
+    | Base Translation Language Lines - EN
     |--------------------------------------------------------------------------
     |
     | The following language lines are used during Translation for
@@ -13,7 +13,7 @@ return [
     */
 
     'rule' => [
-        'exist_title' => 'The title is repetitive.'
+        'exist' => 'The :field field already exists.',
     ],
 
 ];

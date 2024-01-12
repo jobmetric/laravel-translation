@@ -6,13 +6,22 @@ use JobMetric\Translation\Models\Translation;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Database\Eloquent\Builder;
 
-class TranslationTitleExistRule implements Rule
+class TranslationFieldExistRule implements Rule
 {
     private string $class_name;
+    private string $field_name;
+    private ?string $locale;
 
-    public function __construct(string $class_name)
+    public function __construct(string $class_name, string $field_name = 'title', string $locale = null)
     {
         $this->class_name = $class_name;
+        $this->field_name = $field_name;
+
+        if ($locale === null) {
+            $this->locale = app()->getLocale();
+        } else {
+            $this->locale = $locale;
+        }
     }
 
     /**
@@ -26,7 +35,9 @@ class TranslationTitleExistRule implements Rule
     public function passes($attribute, $value): bool
     {
         return !Translation::query()->whereHasMorph('translatable', $this->class_name, function (Builder $query) use ($value) {
-            $query->where('title', $value);
+            $query->where('locale', $this->locale);
+            $query->where('key', $this->field_name);
+            $query->where('value', $value);
         })->exists();
     }
 
@@ -37,6 +48,6 @@ class TranslationTitleExistRule implements Rule
      */
     public function message(): string
     {
-        return trans('j-translation::base.rule.exist_title');
+        return trans('translation::base.rule.exist', ['field' => $this->field_name]);
     }
 }
