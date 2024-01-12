@@ -185,4 +185,37 @@ trait HasTranslation
 
         return $this->translationsTo($locale)->pluck('value', 'key')->toArray();
     }
+
+    /**
+     * forget translation
+     *
+     * @param string $key
+     * @param string $locale
+     *
+     * @return static
+     */
+    public function forgetTranslation(string $key, string $locale): static
+    {
+        $this->translationsTo($locale)->where('key', $key)->delete();
+
+        return $this;
+    }
+
+    /**
+     * forget translations
+     *
+     * @param string|null $locale
+     *
+     * @return static
+     */
+    public function forgetTranslations(string $locale = null): static
+    {
+        if(is_null($locale)) {
+            $this->translations()->delete();
+        } else {
+            $this->translationsTo($locale)->delete();
+        }
+
+        return $this;
+    }
 }
