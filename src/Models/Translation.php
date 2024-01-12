@@ -2,13 +2,11 @@
 
 namespace JobMetric\Translation\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-/**
- * @property Model instance
- */
 class Translation extends Model
 {
     use HasFactory;
@@ -20,11 +18,6 @@ class Translation extends Model
         'key',
         'value'
     ];
-
-    protected static function boot(): void
-    {
-        parent::boot();
-    }
 
     public function getTable()
     {
@@ -39,5 +32,35 @@ class Translation extends Model
     public function translatable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Scope locale.
+     *
+     * @param Builder $query
+     * @param string|null $locale
+     *
+     * @return Builder
+     */
+    public function scopeLocale(Builder $query, string $locale = null): Builder
+    {
+        if(is_null($locale)) {
+            $locale = app()->getLocale();
+        }
+
+        return $query->where('locale', $locale);
+    }
+
+    /**
+     * Scope key.
+     *
+     * @param Builder $query
+     * @param string $key
+     *
+     * @return Builder
+     */
+    public function scopeKey(Builder $query, string $key): Builder
+    {
+        return $query->where('key', $key);
     }
 }
