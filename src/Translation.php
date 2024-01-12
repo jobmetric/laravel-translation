@@ -5,6 +5,7 @@ namespace JobMetric\Translation;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use JobMetric\Translation\Events\TranslationStoredEvent;
 use JobMetric\Translation\Exceptions\ModelHasTranslationNotFoundException;
 use JobMetric\Translation\Exceptions\TranslationDisallowFieldException;
 use JobMetric\Translation\Http\Resources\TranslationResource;
@@ -109,6 +110,8 @@ class Translation
                 throw new TranslationDisallowFieldException(self::class, $key);
             }
         }
+
+        event(new TranslationStoredEvent($model, $locale, $data));
     }
 
     /**
