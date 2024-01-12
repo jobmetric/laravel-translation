@@ -4,8 +4,9 @@ namespace JobMetric\Translation;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use JobMetric\Translation\Events\TranslationStoredEvent;
 use JobMetric\Translation\Exceptions\ModelTranslationContractNotFoundException;
-use JobMetric\Translation\Facades\Translation as TranslationFacade;
+use JobMetric\Translation\Exceptions\TranslationDisallowFieldException;
 use JobMetric\Translation\Models\Translation as TranslationModel;
 use Throwable;
 
@@ -79,10 +80,24 @@ trait HasTranslation
      * @param array $data
      *
      * @return static
+     * @throws TranslationDisallowFieldException
      */
     public function translate(string $locale, array $data): static
     {
-        TranslationFacade::store($this, $locale, $data);
+        foreach ($data as $key => $value) {
+            if (in_array($key, $this->translationAllowFields())) {
+                $this->translation()->updateOrCreate([
+                    'locale' => $locale,
+                    'key' => $key,
+                ], [
+                    'value' => $value,
+                ]);
+            } else {
+                throw new TranslationDisallowFieldException(self::class, $key);
+            }
+        }
+
+        event(new TranslationStoredEvent($this, $locale, $data));
 
         return $this;
     }

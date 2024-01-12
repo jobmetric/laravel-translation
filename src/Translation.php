@@ -83,38 +83,6 @@ class Translation
     }
 
     /**
-     * store translation
-     *
-     * @param Model $model
-     * @param string $locale
-     * @param array $data
-     *
-     * @return void
-     * @throws Throwable
-     */
-    public function store(Model $model, string $locale, array $data = []): void
-    {
-        if (!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
-            throw new ModelHasTranslationNotFoundException($model::class);
-        }
-
-        foreach ($data as $key => $value) {
-            if (in_array($key, $model->translationAllowFields())) {
-                $model->translation()->updateOrCreate([
-                    'locale' => $locale,
-                    'key' => $key,
-                ], [
-                    'value' => $value,
-                ]);
-            } else {
-                throw new TranslationDisallowFieldException(self::class, $key);
-            }
-        }
-
-        event(new TranslationStoredEvent($model, $locale, $data));
-    }
-
-    /**
      * delete translation
      *
      * @param Model $model
