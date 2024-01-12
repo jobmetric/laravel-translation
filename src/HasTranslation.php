@@ -126,4 +126,19 @@ trait HasTranslation
 
         return $this;
     }
+
+    /**
+     * has translation
+     *
+     * @param string $key
+     * @param string|null $locale
+     *
+     * @return bool
+     */
+    public function hasTranslation(string $key, string $locale = null): bool
+    {
+        $locale = $locale ?: app()->getLocale();
+
+        return $this->translationsTo($locale)->where('key', $key)->exists();
+    }
 }
