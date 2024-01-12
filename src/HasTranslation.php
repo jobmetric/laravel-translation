@@ -143,17 +143,46 @@ trait HasTranslation
     }
 
     /**
-     * has translation
+     * has translation field
      *
      * @param string $key
      * @param string|null $locale
      *
      * @return bool
      */
-    public function hasTranslation(string $key, string $locale = null): bool
+    public function hasTranslationField(string $key = 'title', string $locale = null): bool
     {
         $locale = $locale ?: app()->getLocale();
 
         return $this->translationsTo($locale)->where('key', $key)->exists();
+    }
+
+    /**
+     * get translation
+     *
+     * @param string $key
+     * @param string|null $locale
+     *
+     * @return string|null
+     */
+    public function getTranslation(string $key, string $locale = null): ?string
+    {
+        $locale = $locale ?: app()->getLocale();
+
+        return $this->translationsTo($locale)->where('key', $key)->first()?->value;
+    }
+
+    /**
+     * get translations
+     *
+     * @param string|null $locale
+     *
+     * @return array
+     */
+    public function getTranslations(string $locale = null): array
+    {
+        $locale = $locale ?: app()->getLocale();
+
+        return $this->translationsTo($locale)->pluck('value', 'key')->toArray();
     }
 }
