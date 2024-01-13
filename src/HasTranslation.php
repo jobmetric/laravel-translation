@@ -50,7 +50,7 @@ trait HasTranslation
     }
 
     /**
-     * scope locale for select translations relationship
+     * scope locale for select translation relationship
      *
      * @param string $locale
      *
