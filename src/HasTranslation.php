@@ -4,6 +4,7 @@ namespace JobMetric\Translation;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use JobMetric\Translation\Events\TranslationForgetEvent;
 use JobMetric\Translation\Events\TranslationStoredEvent;
 use JobMetric\Translation\Exceptions\ModelTranslationContractNotFoundException;
 use JobMetric\Translation\Exceptions\TranslationDisallowFieldException;
@@ -196,7 +197,11 @@ trait HasTranslation
      */
     public function forgetTranslation(string $key, string $locale): static
     {
-        $this->translationsTo($locale)->where('key', $key)->delete();
+        $this->translationsTo($locale)->where('key', $key)->get()->each(function ($translation) {
+            $translation->delete();
+
+            event(new TranslationForgetEvent($translation));
+        });
 
         return $this;
     }
@@ -211,9 +216,17 @@ trait HasTranslation
     public function forgetTranslations(string $locale = null): static
     {
         if(is_null($locale)) {
-            $this->translations()->delete();
+            $this->translations()->get()->each(function ($translation) {
+                $translation->delete();
+
+                event(new TranslationForgetEvent($translation));
+            });
         } else {
-            $this->translationsTo($locale)->delete();
+            $this->translationsTo($locale)->get()->each(function ($translation) {
+                $translation->delete();
+
+                event(new TranslationForgetEvent($translation));
+            });
         }
 
         return $this;
