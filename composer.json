@@ -32,7 +32,7 @@
         ],
         "psr-4": {
             "JobMetric\\Translation\\": "src/",
-            "JobMetric\\Setting\\Factories\\": "database/factories/"
+            "JobMetric\\Translation\\Factories\\": "database/factories/"
         }
     },
     "scripts": {
@@ -43,10 +43,7 @@
         "laravel": {
             "providers": [
                 "JobMetric\\Translation\\TranslationServiceProvider"
-            ],
-            "aliases": {
-                "Translation": "Translation"
-            }
+            ]
         }
     },
     "minimum-stability": "stable",
