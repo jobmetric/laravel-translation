@@ -81,7 +81,7 @@ trait HasTranslation
      * @param array $data
      *
      * @return static
-     * @throws TranslationDisallowFieldException
+     * @throws Throwable
      */
     public function translate(string $locale, array $data): static
     {
