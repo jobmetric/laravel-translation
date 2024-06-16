@@ -119,45 +119,112 @@ translation has one relationship
 
 ### `translations`
 
-translation has many relationship
+translation has many relationships
 
 ### `translationTo`
 
 scope locale for select translation relationship
 
+```php
+Post::translationTo('en')->get();
+
+// or
+
+Post::where('status', 'published')->translationTo('en')->get();
+```
+
 ### `translationsTo`
 
 scope locale for select translations relationship
 
+```php
+Post::translationsTo('en')->get();
+
+// or
+
+Post::where('status', 'published')->translationsTo('en')->get();
+```
+
 ### `translate`
 
-store translate for model
+store translates for the model
+
+```php
+$post->translate('en', [
+    'title' => 'Post title',
+    'body' => 'Post body',
+]);
+```
 
 ### `withTranslation`
 
 load translation after model loaded
 
+```php
+$post = Post::query()->where('id', 1)->first()->withTranslation('en', 'title');
+```
+
 ### `withTranslations`
 
 load translations after model loaded
+
+```php
+$post = Post::query()->where('id', 1)->first()->withTranslations();
+```
 
 ### `hasTranslationField`
 
 check model has translation field
 
+```php
+$post->hasTranslationField('title');
+```
+
 ### `getTranslation`
 
-get translation for model
+get translation for the model
+
+```php
+$post->getTranslation('title');
+```
 
 ### `getTranslations`
 
-get translations for model
+get translations for the model
+
+```php
+$post->getTranslations();
+```
 
 ### `forgetTranslation`
 
-forget translation for model
+forget translation for the model
+
+```php
+$post->forgetTranslation('title', 'en');
+```
 
 ### `forgetTranslations`
 
-forget translations for model
+forget translations for the model
 
+```php
+$post->forgetTranslations('en');
+```
+
+## Events
+
+This package contains several events for which you can write a listener as follows
+
+| Event                    | Description                                            |
+|--------------------------|--------------------------------------------------------|
+| `TranslationStoredEvent` | This event is called after storing the translation.    |
+| `TranslationForgetEvent` | This event is called after forgetting the translation. |
+
+## Contributing
+
+Thank you for considering contributing to the Laravel Translation! The contribution guide can be found in the [CONTRIBUTING.md](https://github.com/jobmetric/laravel-translation/blob/master/CONTRIBUTING.md).
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/jobmetric/laravel-translation/blob/master/LICENCE.md) for more information.
