@@ -41,7 +41,7 @@ trait HasTranslation
     }
 
     /**
-     * translation has many relationship
+     * translation has many relationships
      *
      * @return MorphMany
      */
