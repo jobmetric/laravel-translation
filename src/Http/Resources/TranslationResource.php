@@ -8,6 +8,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use JsonSerializable;
 
 /**
+ * @property mixed translatable_type
+ * @property mixed translatable_id
  * @property mixed locale
  * @property mixed key
  * @property mixed value
@@ -28,6 +30,8 @@ class TranslationResource extends JsonResource
         }
 
         return [
+            'translatable_type' => $this->translatable_type,
+            'translatable_id' => $this->translatable_id,
             'locale' => $this->locale,
             'key' => $this->key,
             'value' => $this->value
