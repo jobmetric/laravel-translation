@@ -24,3 +24,27 @@ if (!function_exists('translation')) {
         }
     }
 }
+
+if (!function_exists('translationResourceData')) {
+    /**
+     * translation resource data
+     *
+     * @param mixed $relations
+     * @param string|null $locale
+     *
+     * @return array
+     */
+    function translationResourceData(mixed $relations, string $locale = null): array
+    {
+        $data = [];
+        foreach ($relations as $relation) {
+            if ($locale && $relation->locale !== $locale) {
+                continue;
+            }
+
+            $data[$relation->locale][$relation->key] = $relation->value;
+        }
+
+        return $data;
+    }
+}
