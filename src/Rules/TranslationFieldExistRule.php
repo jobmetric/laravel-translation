@@ -11,8 +11,9 @@ class TranslationFieldExistRule implements Rule
     private string $class_name;
     private string $field_name;
     private ?string $locale;
+    private ?int $unit_id;
 
-    public function __construct(string $class_name, string $field_name = 'title', string $locale = null)
+    public function __construct(string $class_name, string $field_name = 'title', string $locale = null, int $unit_id = null)
     {
         $this->class_name = $class_name;
         $this->field_name = $field_name;
@@ -22,6 +23,8 @@ class TranslationFieldExistRule implements Rule
         } else {
             $this->locale = $locale;
         }
+
+        $this->unit_id = $unit_id;
     }
 
     /**
@@ -34,10 +37,13 @@ class TranslationFieldExistRule implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        return !Translation::query()->whereHasMorph('translatable', $this->class_name, function (Builder $query) use ($value) {
-            $query->where('locale', $this->locale);
-            $query->where('key', $this->field_name);
-            $query->where('value', $value);
+        return !Translation::query()->where([
+            'translatable_type' => $this->class_name,
+            'locale' => $this->locale,
+            'key' => $this->field_name,
+            'value' => $value
+        ])->when($this->unit_id, function (Builder $q) {
+            $q->where('translatable_id', '!=', $this->unit_id);
         })->exists();
     }
 
