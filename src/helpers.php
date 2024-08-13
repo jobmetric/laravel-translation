@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection as CollectionSupport;
 use JobMetric\Translation\Exceptions\ModelHasTranslationNotFoundException;
 
 if (!function_exists('translation')) {
@@ -46,5 +48,28 @@ if (!function_exists('translationResourceData')) {
         }
 
         return $data;
+    }
+}
+
+if (!function_exists('translationDataSelect')) {
+    /**
+     * translation data for select
+     *
+     * @param Collection $objects
+     * @param string $field
+     * @param string|null $locale
+     *
+     * @return CollectionSupport|Collection
+     */
+    function translationDataSelect(Collection $objects, string $field, string $locale = null): Collection|CollectionSupport
+    {
+        return $objects->mapWithKeys(function ($object) use ($field, $locale) {
+            return [
+                $object->id => $object->translations()->select('value')->where([
+                    'locale' => $locale ?: app()->getLocale(),
+                    'key' => $field
+                ])->first()->toArray()['value']
+            ];
+        });
     }
 }

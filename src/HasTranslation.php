@@ -215,7 +215,7 @@ trait HasTranslation
      */
     public function forgetTranslations(string $locale = null): static
     {
-        if(is_null($locale)) {
+        if (is_null($locale)) {
             $this->translations()->get()->each(function ($translation) {
                 $translation->delete();
 
