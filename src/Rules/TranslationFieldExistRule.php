@@ -11,9 +11,9 @@ class TranslationFieldExistRule implements Rule
     private string $class_name;
     private string $field_name;
     private ?string $locale;
-    private ?int $unit_id;
+    private ?int $object_id;
 
-    public function __construct(string $class_name, string $field_name = 'title', string $locale = null, int $unit_id = null)
+    public function __construct(string $class_name, string $field_name = 'title', string $locale = null, int $object_id = null)
     {
         $this->class_name = $class_name;
         $this->field_name = $field_name;
@@ -24,7 +24,7 @@ class TranslationFieldExistRule implements Rule
             $this->locale = $locale;
         }
 
-        $this->unit_id = $unit_id;
+        $this->object_id = $object_id;
     }
 
     /**
@@ -42,8 +42,8 @@ class TranslationFieldExistRule implements Rule
             'locale' => $this->locale,
             'key' => $this->field_name,
             'value' => $value
-        ])->when($this->unit_id, function (Builder $q) {
-            $q->where('translatable_id', '!=', $this->unit_id);
+        ])->when($this->object_id, function (Builder $q) {
+            $q->where('translatable_id', '!=', $this->object_id);
         })->exists();
     }
 
