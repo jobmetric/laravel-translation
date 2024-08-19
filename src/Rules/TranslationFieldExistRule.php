@@ -12,8 +12,9 @@ class TranslationFieldExistRule implements Rule
     private string $field_name;
     private ?string $locale;
     private ?int $object_id;
+    private ?int $parent_id;
 
-    public function __construct(string $class_name, string $field_name = 'title', string $locale = null, int $object_id = null)
+    public function __construct(string $class_name, string $field_name = 'title', string $locale = null, int $object_id = null, int $parent_id = null)
     {
         $this->class_name = $class_name;
         $this->field_name = $field_name;
@@ -25,6 +26,7 @@ class TranslationFieldExistRule implements Rule
         }
 
         $this->object_id = $object_id;
+        $this->parent_id = $parent_id;
     }
 
     /**
@@ -37,14 +39,26 @@ class TranslationFieldExistRule implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        return !Translation::query()->where([
-            'translatable_type' => $this->class_name,
-            'locale' => $this->locale,
-            'key' => $this->field_name,
-            'value' => $value
-        ])->when($this->object_id, function (Builder $q) {
-            $q->where('translatable_id', '!=', $this->object_id);
-        })->exists();
+        $_translation = (new Translation)->getTable();
+
+        $query = Translation::query();
+
+        if ($this->parent_id) {
+            $join_table = (new $this->class_name)->getTable();
+
+            $query->join($join_table, $_translation . '.translatable_id', '=', $join_table . '.id')
+                ->where($join_table . '.parent_id', $this->parent_id);
+        }
+
+        $query->where($_translation . '.translatable_type', $this->class_name)
+            ->where($_translation . '.locale', $this->locale)
+            ->where($_translation . '.key', $this->field_name)
+            ->where($_translation . '.value', $value)
+            ->when($this->object_id, function (Builder $q) use ($_translation) {
+                $q->where($_translation . '.translatable_id', '!=', $this->object_id);
+            });
+
+        return !$query->exists();
     }
 
     /**
