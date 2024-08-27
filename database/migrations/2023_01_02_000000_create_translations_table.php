@@ -32,7 +32,7 @@ return new class extends Migration {
              * For example, the key field of the title translation is "title".
              */
 
-            $table->longText('value')->fulltext();
+            $table->longText('value')->nullable()->fulltext();
             /**
              * The value field is used to store the value of the translation.
              * For example, the value field of the title translation is "Product title".
