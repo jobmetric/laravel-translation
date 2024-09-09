@@ -51,8 +51,8 @@ class TranslationFieldExistRule implements Rule
             $query->join($join_table, $_translation . '.translatable_id', '=', $join_table . '.id')
                 ->where($join_table . '.parent_id', $this->parent_id);
 
-            foreach ($this->parent_where as $key => $value) {
-                $query->where($join_table . '.' . $key, $value);
+            foreach ($this->parent_where as $parent_where_key => $parent_where_value) {
+                $query->where($join_table . '.' . $parent_where_key, $parent_where_value);
             }
         }
 
