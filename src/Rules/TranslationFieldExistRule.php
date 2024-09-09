@@ -10,11 +10,12 @@ class TranslationFieldExistRule implements Rule
 {
     private string $class_name;
     private string $field_name;
-    private ?string $locale;
-    private ?int $object_id;
-    private ?int $parent_id;
+    private string|null $locale;
+    private int|null $object_id;
+    private int|null $parent_id;
+    private array $parent_where;
 
-    public function __construct(string $class_name, string $field_name = 'title', string $locale = null, int $object_id = null, int $parent_id = null)
+    public function __construct(string $class_name, string $field_name = 'title', string|null $locale = null, int|null $object_id = null, int|null $parent_id = -1, array $parent_where = [])
     {
         $this->class_name = $class_name;
         $this->field_name = $field_name;
@@ -27,6 +28,7 @@ class TranslationFieldExistRule implements Rule
 
         $this->object_id = $object_id;
         $this->parent_id = $parent_id;
+        $this->parent_where = $parent_where;
     }
 
     /**
@@ -43,11 +45,15 @@ class TranslationFieldExistRule implements Rule
 
         $query = Translation::query();
 
-        if ($this->parent_id) {
+        if ($this->parent_id != -1) {
             $join_table = (new $this->class_name)->getTable();
 
             $query->join($join_table, $_translation . '.translatable_id', '=', $join_table . '.id')
                 ->where($join_table . '.parent_id', $this->parent_id);
+
+            foreach ($this->parent_where as $key => $value) {
+                $query->where($join_table . '.' . $key, $value);
+            }
         }
 
         $query->where($_translation . '.translatable_type', $this->class_name)
