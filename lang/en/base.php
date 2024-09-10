@@ -16,4 +16,12 @@ return [
         'exist' => 'The :field field already exists.',
     ],
 
+    'filed' => [
+        'name' => [
+            'label' => 'Name',
+            'info' => 'Name of the item',
+            'placeholder' => 'Enter Name',
+        ]
+    ]
+
 ];
