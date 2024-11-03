@@ -12,16 +12,31 @@ return [
     |
     */
 
-    'rule' => [
-        'exist' => 'The :field field already exists.',
+    "rule" => [
+        "exist" => "The :field field already exists.",
     ],
 
-    'filed' => [
-        'name' => [
-            'label' => 'Name',
-            'info' => 'Name of the item',
-            'placeholder' => 'Enter Name',
-        ]
+    "fields" => [
+        "name" => [
+            "label" => "Name",
+            "info" => "Name of the item",
+            "placeholder" => "Enter Item Name",
+        ],
+        "meta_title" => [
+            "label" => "Meta Title",
+            "info" => "Set a meta title tag. It is recommended to be simple and precise keywords.",
+            "placeholder" => "Enter Meta Title",
+        ],
+        "meta_description" => [
+            "label" => "Meta Description",
+            "info" => "Set a meta description tag to increase SEO rank.",
+            "placeholder" => "Enter Meta Description",
+        ],
+        "meta_keywords" => [
+            "label" => "Meta Keywords",
+            "info" => "Set a list of keywords that this item is related to. Separate keywords by adding <code>,</code> between each keyword.",
+            "placeholder" => "Enter Meta Keywords",
+        ],
     ]
 
 ];
