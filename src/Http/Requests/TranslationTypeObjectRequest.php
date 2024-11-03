@@ -18,13 +18,23 @@ trait TranslationTypeObjectRequest
     ): void
     {
         $rules['translation'] = 'array';
-        $rules['translation.name'] = [
+        $rules['translation.' . $field_name] = [
             'string',
             new TranslationFieldExistRule($class_name, $field_name, $locale, $object_id, $parent_id, $parent_where),
         ];
 
-        foreach ($object_type['translation'] ?? [] as $translation_key => $translation_value) {
+        foreach ($object_type['translation']['fields'] ?? [] as $translation_key => $translation_value) {
+            if ($translation_key === $field_name && !isset($translation_value['validation'])) {
+                continue;
+            }
+
             $rules['translation.' . $translation_key] = $translation_value['validation'] ?? 'string|nullable|sometimes';
+        }
+
+        if ($object_type['translation']['seo'] ?? false) {
+            $rules['translation.meta_title'] = 'string|nullable|sometimes';
+            $rules['translation.meta_description'] = 'string|nullable|sometimes';
+            $rules['translation.meta_keywords'] = 'string|nullable|sometimes';
         }
     }
 }
