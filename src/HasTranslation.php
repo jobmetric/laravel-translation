@@ -12,6 +12,12 @@ use JobMetric\Translation\Models\Translation as TranslationModel;
 use Throwable;
 
 /**
+ * Trait HasTranslation
+ *
+ * @package JobMetric\Translation
+ *
+ * @property TranslationModel[] $translations
+ *
  * @method morphOne(string $class, string $string)
  * @method morphMany(string $class, string $string)
  */
