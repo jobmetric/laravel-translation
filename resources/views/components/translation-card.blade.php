@@ -4,18 +4,18 @@
         <div class="card-title">
             <span class="fs-5 fw-bold">{{ trans('translation::base.components.translation_card.title') }}</span>
         </div>
-        <div class="card-toolbar">
-            <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x fs-6 border-0">
-                @if(isset($items['seo']) && $items['seo'])
+        @if(isset($items['seo']) && $items['seo'])
+            <div class="card-toolbar">
+                <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x fs-6 border-0">
                     <li class="nav-item">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tab_general_public">{{ trans('translation::base.components.translation_card.tabs.basic_info') }}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#tab_general_seo">{{ trans('translation::base.components.translation_card.tabs.seo') }}</a>
                     </li>
-                @endif
-            </ul>
-        </div>
+                </ul>
+            </div>
+        @endif
     </div>
     <div class="card-body">
         <div class="tab-content">
