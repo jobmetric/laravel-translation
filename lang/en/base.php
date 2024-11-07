@@ -19,6 +19,7 @@ return [
     "components" => [
         "translation_card" => [
             "title" => "General Information",
+            "multi_title" => "General Information in :language Language",
             "tabs" => [
                 "basic_info" => "Basic Information",
                 "seo" => "SEO Settings",

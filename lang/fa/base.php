@@ -19,6 +19,7 @@ return [
     "components" => [
         "translation_card" => [
             "title" => "اطلاعات عمومی",
+            "multi_title" => "اطلاعات عمومی در زبان :language",
             'tabs' => [
                 "basic_info" => "اطلاعات پایه",
                 "seo" => "تنظیمات سئو",
