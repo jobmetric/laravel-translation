@@ -25,7 +25,8 @@
         "ext-json": "*",
         "laravel/framework": ">=9.19",
         "jobmetric/laravel-package-core": "^1.2",
-        "jobmetric/laravel-metadata": "^2.2"
+        "jobmetric/laravel-metadata": "^2.2",
+        "jobmetric/laravel-language": "^1.8"
     },
     "autoload": {
         "files": [
