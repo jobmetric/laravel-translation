@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * JobMetric\Category\Models\Category
+ *
+ * @property int $translatable_id
+ * @property string $translatable_type
+ * @property string $locale
+ * @property string $key
+ * @property string $value
+ *
+ * @method static find(int $int)
+ */
 class Translation extends Model
 {
     use HasFactory;
