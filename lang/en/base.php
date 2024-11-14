@@ -49,4 +49,10 @@ return [
         ],
     ],
 
+    "modals" => [
+        "translation_list" => [
+            "title" => "Edit Translation in {language} Language",
+        ],
+    ],
+
 ];
