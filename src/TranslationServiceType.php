@@ -3,6 +3,7 @@
 namespace JobMetric\Translation;
 
 use Closure;
+use Illuminate\Support\Collection;
 use JobMetric\CustomField\CustomFieldBuilder;
 use JobMetric\Translation\ServiceType\TranslationBuilder;
 use Throwable;
@@ -32,7 +33,7 @@ trait TranslationServiceType
         $this->translation(function (TranslationBuilder $translationBuilder) {
             $translationBuilder->customField(function (CustomFieldBuilder $customFieldBuilder) {
                 $customFieldBuilder::text()
-                    ->name('translation[name]')
+                    ->name('translation[{locale}][name]')
                     ->label('translation::base.components.translation_card.fields.name.label')
                     ->info('translation::base.components.translation_card.fields.name.info')
                     ->placeholder('translation::base.components.translation_card.fields.name.placeholder')
@@ -53,7 +54,7 @@ trait TranslationServiceType
             ->translation(function (TranslationBuilder $builder) {
                 $builder->customField(function (CustomFieldBuilder $customFieldBuilder) {
                     $customFieldBuilder::text()
-                        ->name('translation[meta_title]')
+                        ->name('translation[{locale}][meta_title]')
                         ->label('translation::base.components.translation_card.fields.meta_title.label')
                         ->info('translation::base.components.translation_card.fields.meta_title.info')
                         ->placeholder('translation::base.components.translation_card.fields.meta_title.placeholder')
@@ -62,7 +63,7 @@ trait TranslationServiceType
             })->translation(function (TranslationBuilder $builder) {
                 $builder->customField(function (CustomFieldBuilder $customFieldBuilder) {
                     $customFieldBuilder::text()
-                        ->name('translation[meta_description]')
+                        ->name('translation[{locale}][meta_description]')
                         ->label('translation::base.components.translation_card.fields.meta_description.label')
                         ->info('translation::base.components.translation_card.fields.meta_description.info')
                         ->placeholder('translation::base.components.translation_card.fields.meta_description.placeholder')
@@ -71,7 +72,7 @@ trait TranslationServiceType
             })->translation(function (TranslationBuilder $builder) {
                 $builder->customField(function (CustomFieldBuilder $customFieldBuilder) {
                     $customFieldBuilder::text()
-                        ->name('translation[meta_keywords]')
+                        ->name('translation[{locale}][meta_keywords]')
                         ->label('translation::base.components.translation_card.fields.meta_keywords.label')
                         ->info('translation::base.components.translation_card.fields.meta_keywords.info')
                         ->placeholder('translation::base.components.translation_card.fields.meta_keywords.placeholder')
@@ -114,10 +115,10 @@ trait TranslationServiceType
     /**
      * Get translation.
      *
-     * @return array
+     * @return Collection
      */
-    public function getTranslation(): array
+    public function getTranslation(): Collection
     {
-        return $this->getTypeParam('translation', []);
+        return collect($this->getTypeParam('translation', []));
     }
 }
