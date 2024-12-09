@@ -18,7 +18,7 @@ trait TranslationTypeObjectRequest
     ): void
     {
         $rules['translation'] = 'array';
-        $rules['translation.' . $field_name] = [
+        $rules["translation.$locale.$field_name"] = [
             'string',
             new TranslationFieldExistRule($class_name, $field_name, $locale, $object_id, $parent_id, $parent_where),
         ];
@@ -28,13 +28,13 @@ trait TranslationTypeObjectRequest
                 continue;
             }
 
-            $rules['translation.' . $translation_key] = $translation_value['validation'] ?? 'string|nullable|sometimes';
+            $rules["translation.$locale.$translation_key"] = $translation_value['validation'] ?? 'string|nullable|sometimes';
         }
 
         if ($object_type['translation']['seo'] ?? false) {
-            $rules['translation.meta_title'] = 'string|nullable|sometimes';
-            $rules['translation.meta_description'] = 'string|nullable|sometimes';
-            $rules['translation.meta_keywords'] = 'string|nullable|sometimes';
+            $rules["translation.$locale.meta_title"] = 'string|nullable|sometimes';
+            $rules["translation.$locale.meta_description"] = 'string|nullable|sometimes';
+            $rules["translation.$locale.meta_keywords"] = 'string|nullable|sometimes';
         }
     }
 }

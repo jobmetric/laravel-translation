@@ -70,7 +70,14 @@ const translation_list = {
         $('#modal_translation_locale').val(locale)
         $('#modal_translation_translatable_id').val(row.data().id)
 
-        $('.modal-translation-field').val('')
+        $('.modal-translation-field').val('').each(function() {
+            let nameAttr = $(this).attr('name')
+            if (nameAttr) {
+                let updatedName = nameAttr.replace(/\[.*?\]/, `[${locale}]`)
+                $(this).attr('name', updatedName)
+            }
+        })
+        
         $.each(eval(`row.data().translations?.${locale}`), function(language_key, language_value) {
             $(`#modal_translation_field_${language_key}`).val(language_value)
         })

@@ -27,7 +27,7 @@
         "jobmetric/laravel-package-core": "^1.2",
         "jobmetric/laravel-metadata": "^2.2",
         "jobmetric/laravel-language": "^1.8",
-        "jobmetric/laravel-custom-field": "^1.4"
+        "jobmetric/laravel-custom-field": "^1.5"
     },
     "autoload": {
         "files": [
