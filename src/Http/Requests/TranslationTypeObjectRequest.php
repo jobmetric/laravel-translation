@@ -2,39 +2,79 @@
 
 namespace JobMetric\Translation\Http\Requests;
 
+use Illuminate\Support\Collection;
 use JobMetric\Translation\Rules\TranslationFieldExistRule;
+use JobMetric\Translation\ServiceType\Translation;
 
 trait TranslationTypeObjectRequest
 {
     public function renderTranslationFiled(
-        array       &$rules,
-        array       $object_type,
-        string      $class_name,
-        string      $field_name = 'title',
-        string|null $locale = null,
-        int|null    $object_id = null,
-        int|null    $parent_id = -1,
-        array       $parent_where = []
+        array      &$rules,
+        array      $data,
+        Collection $translations,
+        string     $class_name,
+        string     $field_name = 'name',
+        int|null   $object_id = null,
+        int|null   $parent_id = -1,
+        array      $parent_where = []
     ): void
     {
-        $rules['translation'] = 'array';
-        $rules["translation.$locale.$field_name"] = [
-            'string',
-            new TranslationFieldExistRule($class_name, $field_name, $locale, $object_id, $parent_id, $parent_where),
-        ];
+        if (array_key_exists('translation', $data)) {
+            $translation = $data['translation'];
 
-        foreach ($object_type['translation']['fields'] ?? [] as $translation_key => $translation_value) {
-            if ($translation_key === $field_name && !isset($translation_value['validation'])) {
-                continue;
+            $locale = '';
+            foreach ($translation as $key => $value) {
+                $locale = $key;
+                break;
             }
-
-            $rules["translation.$locale.$translation_key"] = $translation_value['validation'] ?? 'string|nullable|sometimes';
+        } else {
+            $locale = app()->getLocale();
         }
 
-        if ($object_type['translation']['seo'] ?? false) {
-            $rules["translation.$locale.meta_title"] = 'string|nullable|sometimes';
-            $rules["translation.$locale.meta_description"] = 'string|nullable|sometimes';
-            $rules["translation.$locale.meta_keywords"] = 'string|nullable|sometimes';
+        $rules["translation"] = 'array';
+        $rules["translation.$locale"] = 'array';
+        $rules["translation.$locale.$field_name"] = [
+            'string',
+            new TranslationFieldExistRule($class_name, $field_name, $locale, $object_id, $parent_id, $parent_where)
+        ];
+
+        foreach ($translations as $item) {
+            /**
+             * @var Translation $item
+             */
+            $uniqName = $item->customField->params['uniqName'] ?? null;
+
+            if ($uniqName !== $field_name) {
+                $rules["translation.$locale.$uniqName"] = $item->customField->validation ?? 'string|nullable|sometimes';
+            }
+        }
+    }
+
+    public function renderTranslationAttribute(
+        array      &$params,
+        array      $data,
+        Collection $translations
+    ): void
+    {
+        if (array_key_exists('translation', $data)) {
+            $translation = $data['translation'];
+
+            $locale = '';
+            foreach ($translation as $key => $value) {
+                $locale = $key;
+                break;
+            }
+        } else {
+            $locale = app()->getLocale();
+        }
+
+        foreach ($translations as $item) {
+            /**
+             * @var Translation $item
+             */
+            $uniqName = $item->customField->params['uniqName'];
+
+            $params["translation.$locale.$uniqName"] = trans($item->customField->label);
         }
     }
 }
