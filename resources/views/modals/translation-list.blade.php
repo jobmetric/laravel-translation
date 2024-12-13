@@ -66,6 +66,7 @@
                         $item->customField->render(
                             replaces: ['locale' => app()->getLocale()],
                             class: 'modal-translation-field',
+                            hasErrorTagJs: true,
                             errorTagClass: 'modal-translation-errors',
                             prefixId: 'modal_translation_field'
                         )
