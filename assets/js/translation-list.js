@@ -73,11 +73,22 @@ const translation_list = {
         $('.modal-translation-field').val('').each(function() {
             let nameAttr = $(this).attr('name')
             if (nameAttr) {
-                let updatedName = nameAttr.replace(/\[.*?\]/, `[${locale}]`)
-                $(this).attr('name', updatedName)
+                $(this).attr('name', nameAttr.replace(/\[.*?\]/, `[${locale}]`))
+            }
+
+            let nameData = $(this).attr('data-name')
+            if (nameData) {
+                $(this).attr('data-name', nameData.replace(/\.([a-z]{2})\./, `.${locale}.`))
             }
         })
-        
+
+        $('.modal-translation-errors').text('').each(function() {
+            let nameData = $(this).attr('data-name')
+            if (nameData) {
+                $(this).attr('data-name', nameData.replace(/\.([a-z]{2})\./, `.${locale}.`))
+            }
+        })
+
         $.each(eval(`row.data().translations?.${locale}`), function(language_key, language_value) {
             $(`#modal_translation_field_${language_key}`).val(language_value)
         })
@@ -107,6 +118,7 @@ $(document).ready(function(){
         error: function (error_data) {
             $('.modal-translation-errors').text('')
             $.each(error_data.responseJSON.errors, function (field, errors) {
+                console.log(field)
                 $(`.modal-translation-errors[data-name="${field}"]`).text(errors[0])
             })
         }
