@@ -96,14 +96,14 @@ trait TranslationServiceType
         if ($callable instanceof Closure) {
             $callable($builder = new TranslationBuilder);
 
-            $this->translation[] = $builder->build();
+            $this->translation[$this->type][] = $builder->build();
         } else {
             foreach ($callable as $translation) {
                 $builder = new TranslationBuilder;
 
                 $builder->customField($translation['customField'] ?? null);
 
-                $this->translation[] = $builder->build();
+                $this->translation[$this->type][] = $builder->build();
             }
         }
 
@@ -119,6 +119,8 @@ trait TranslationServiceType
      */
     public function getTranslation(): Collection
     {
-        return collect($this->getTypeParam('translation', []));
+        $translation = $this->getTypeParam('translation', []);
+
+        return collect($translation[$this->type] ?? []);
     }
 }
