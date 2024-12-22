@@ -17,7 +17,6 @@ use Throwable;
  * @package JobMetric\Translation
  *
  * @property TranslationModel[] $translations
- *
  * @method morphOne(string $class, string $string)
  * @method morphMany(string $class, string $string)
  */
@@ -34,6 +33,22 @@ trait HasTranslation
         if (!in_array('JobMetric\Translation\Contracts\TranslationContract', class_implements(self::class))) {
             throw new ModelTranslationContractNotFoundException(self::class);
         }
+
+        // translation key in all models must be the same in input
+        // means translation [ locale => [ key => value ] ]
+        static::saving(function ($model) {
+
+            if (!empty($model->attributes['translation'])) {
+
+                $translations = $model->attributes['translation'];
+                unset($model->attributes['translation']);
+                $model->save();
+
+                foreach ($translations as $locale => $translationData) {
+                    $model->translate($locale, $translationData);
+                }
+            }
+        });
     }
 
     /**
