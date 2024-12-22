@@ -16,7 +16,7 @@ use Throwable;
  *
  * @package JobMetric\Translation
  *
- * @property TranslationModel[] $translations
+ * @property TranslationModel[] $translation
  * @method morphOne(string $class, string $string)
  * @method morphMany(string $class, string $string)
  */
