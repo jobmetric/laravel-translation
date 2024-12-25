@@ -80,6 +80,19 @@ trait HasTranslation
         static::updated($savingAndUpdatingClosure);
         static::saved($savingAndUpdatingClosure);
 
+        static::deleted(function($model){
+            if(!method_exists($model , 'forceDeleted')){ //means the actual model doesn't support soft delete
+                $model->translations()->forceDelete();
+            }else{
+                $model->translations()->delete();
+            }
+        });
+
+        if (method_exists(static::class, "forceDeleted")) {
+            static::forceDeleted(function ($model) {
+                $model->translations()->forceDelete();
+            });
+        }
     }
 
     /**
