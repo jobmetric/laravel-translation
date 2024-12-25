@@ -17,11 +17,19 @@ use Throwable;
  * @package JobMetric\Translation
  *
  * @property TranslationModel[] $translation
+ * @property array $translation
  * @method morphOne(string $class, string $string)
  * @method morphMany(string $class, string $string)
  */
 trait HasTranslation
 {
+    private array $innerTranslations = [];
+
+    public function initializeHasTranslation(): void
+    {
+        $this->mergeFillable(['translation']);
+    }
+
     /**
      * boot has translation
      *
@@ -36,19 +44,42 @@ trait HasTranslation
 
         // translation key in all models must be the same in input
         // means translation [ locale => [ key => value ] ]
-        static::saving(function ($model) {
+        $checkerClosure = function ($model) {
 
-            if (!empty($model->attributes['translation'])) {
-
-                $translations = $model->attributes['translation'];
+            if (isset($model->attributes['translation'])) {
+                $translation = $model->attributes['translation'];
+                foreach ($translation as $locale => $translationData) { //TODO locale must be checked here 
+                    $keys = array_keys($translationData);
+                    $fieldsThatAreNotExistsInAllowedFields = array_diff($keys, $model->translationAllowFields());
+                    if (count($fieldsThatAreNotExistsInAllowedFields) > 0) {
+                        throw new TranslationDisallowFieldException($model::class, $fieldsThatAreNotExistsInAllowedFields);
+                    }
+                }
+                
+                $model->innerTranslations = $translation;
                 unset($model->attributes['translation']);
-                $model->save();
+            }
+        };
+        static::creating($checkerClosure);
+        static::updating($checkerClosure);
+        static::saving($checkerClosure);
 
-                foreach ($translations as $locale => $translationData) {
+
+        $savingAndUpdatingClosure = function($model){
+
+            if (count($model->innerTranslations) > 0) {
+                $translation = $model->innerTranslations;
+                foreach ($translation as $locale => $translationData) {
                     $model->translate($locale, $translationData);
                 }
+                $model->innerTranslations = [];
             }
-        });
+        };
+
+        static::created($savingAndUpdatingClosure);
+        static::updated($savingAndUpdatingClosure);
+        static::saved($savingAndUpdatingClosure);
+
     }
 
     /**
