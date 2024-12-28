@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * JobMetric\Category\Models\Category
@@ -21,8 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Translation extends Model
 {
-    use HasFactory,
-    SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'translatable_id',
@@ -57,7 +55,7 @@ class Translation extends Model
      */
     public function scopeLocale(Builder $query, string $locale = null): Builder
     {
-        if(is_null($locale)) {
+        if (is_null($locale)) {
             $locale = app()->getLocale();
         }
 

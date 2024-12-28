@@ -4,6 +4,7 @@ namespace JobMetric\Translation;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use JobMetric\Translation\Events\TranslationForgetEvent;
 use JobMetric\Translation\Events\TranslationStoredEvent;
 use JobMetric\Translation\Exceptions\ModelTranslationContractNotFoundException;
@@ -17,7 +18,7 @@ use Throwable;
  * @package JobMetric\Translation
  *
  * @property TranslationModel[] $translation
- * @property array $translation
+ *
  * @method morphOne(string $class, string $string)
  * @method morphMany(string $class, string $string)
  */
@@ -45,52 +46,45 @@ trait HasTranslation
         // translation key in all models must be the same in input
         // means translation [ locale => [ key => value ] ]
         $checkerClosure = function ($model) {
-
             if (isset($model->attributes['translation'])) {
-                $translation = $model->attributes['translation'];
-                foreach ($translation as $locale => $translationData) { //TODO locale must be checked here 
-                    $keys = array_keys($translationData);
-                    $fieldsThatAreNotExistsInAllowedFields = array_diff($keys, $model->translationAllowFields());
-                    if (count($fieldsThatAreNotExistsInAllowedFields) > 0) {
+                foreach ($model->attributes['translation'] as $translation) {
+                    $keys = array_keys($translation);
+
+                    if (!empty($fieldsThatAreNotExistsInAllowedFields = array_diff($keys, $model->translationAllowFields()))) {
                         throw new TranslationDisallowFieldException($model::class, $fieldsThatAreNotExistsInAllowedFields);
                     }
                 }
-                
-                $model->innerTranslations = $translation;
+
+                $model->innerTranslations = $model->attributes['translation'];
                 unset($model->attributes['translation']);
             }
         };
+
         static::creating($checkerClosure);
         static::updating($checkerClosure);
         static::saving($checkerClosure);
 
-
-        $savingAndUpdatingClosure = function($model){
-
-            if (count($model->innerTranslations) > 0) {
-                $translation = $model->innerTranslations;
-                foreach ($translation as $locale => $translationData) {
-                    $model->translate($locale, $translationData);
-                }
-                $model->innerTranslations = [];
+        $savingAndUpdatingClosure = function ($model) {
+            foreach ($model->innerTranslations as $locale => $translation) {
+                $model->translate($locale, $translation);
             }
+
+            $model->innerTranslations = [];
         };
 
         static::created($savingAndUpdatingClosure);
         static::updated($savingAndUpdatingClosure);
         static::saved($savingAndUpdatingClosure);
 
-        static::deleted(function($model){
-            if(!method_exists($model , 'forceDeleted')){ //means the actual model doesn't support soft delete
-                $model->translations()->forceDelete();
-            }else{
+        static::deleted(function ($model) {
+            if (!in_array(SoftDeletes::class, class_uses_recursive($model))) {
                 $model->translations()->delete();
             }
         });
 
         if (method_exists(static::class, "forceDeleted")) {
             static::forceDeleted(function ($model) {
-                $model->translations()->forceDelete();
+                $model->translations()->delete();
             });
         }
     }
