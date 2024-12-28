@@ -55,7 +55,7 @@ class Translation extends Model
      */
     public function scopeLocale(Builder $query, string $locale = null): Builder
     {
-        if(is_null($locale)) {
+        if (is_null($locale)) {
             $locale = app()->getLocale();
         }
 

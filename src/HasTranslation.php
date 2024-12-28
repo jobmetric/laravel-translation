@@ -4,6 +4,7 @@ namespace JobMetric\Translation;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use JobMetric\Translation\Events\TranslationForgetEvent;
 use JobMetric\Translation\Events\TranslationStoredEvent;
 use JobMetric\Translation\Exceptions\ModelTranslationContractNotFoundException;
@@ -17,11 +18,19 @@ use Throwable;
  * @package JobMetric\Translation
  *
  * @property TranslationModel[] $translation
+ *
  * @method morphOne(string $class, string $string)
  * @method morphMany(string $class, string $string)
  */
 trait HasTranslation
 {
+    private array $innerTranslations = [];
+
+    public function initializeHasTranslation(): void
+    {
+        $this->mergeFillable(['translation']);
+    }
+
     /**
      * boot has translation
      *
@@ -36,19 +45,48 @@ trait HasTranslation
 
         // translation key in all models must be the same in input
         // means translation [ locale => [ key => value ] ]
-        static::saving(function ($model) {
+        $checkerClosure = function ($model) {
+            if (isset($model->attributes['translation'])) {
+                foreach ($model->attributes['translation'] as $translation) {
+                    $keys = array_keys($translation);
 
-            if (!empty($model->attributes['translation'])) {
-
-                $translations = $model->attributes['translation'];
-                unset($model->attributes['translation']);
-                $model->save();
-
-                foreach ($translations as $locale => $translationData) {
-                    $model->translate($locale, $translationData);
+                    if (!empty($fieldsThatAreNotExistsInAllowedFields = array_diff($keys, $model->translationAllowFields()))) {
+                        throw new TranslationDisallowFieldException($model::class, $fieldsThatAreNotExistsInAllowedFields);
+                    }
                 }
+
+                $model->innerTranslations = $model->attributes['translation'];
+                unset($model->attributes['translation']);
+            }
+        };
+
+        static::creating($checkerClosure);
+        static::updating($checkerClosure);
+        static::saving($checkerClosure);
+
+        $savingAndUpdatingClosure = function ($model) {
+            foreach ($model->innerTranslations as $locale => $translation) {
+                $model->translate($locale, $translation);
+            }
+
+            $model->innerTranslations = [];
+        };
+
+        static::created($savingAndUpdatingClosure);
+        static::updated($savingAndUpdatingClosure);
+        static::saved($savingAndUpdatingClosure);
+
+        static::deleted(function ($model) {
+            if (!in_array(SoftDeletes::class, class_uses_recursive($model))) {
+                $model->translations()->delete();
             }
         });
+
+        if (method_exists(static::class, "forceDeleted")) {
+            static::forceDeleted(function ($model) {
+                $model->translations()->delete();
+            });
+        }
     }
 
     /**
