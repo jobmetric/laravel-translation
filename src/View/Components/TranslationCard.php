@@ -15,8 +15,9 @@ class TranslationCard extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public Collection|null $items = null,
+        public Collection|array|null $items = null,
         public array $values = [],
+        public string $transScope = '',
         public bool $multiple = false,
     )
     {
@@ -38,7 +39,15 @@ class TranslationCard extends Component
         }
 
         if ($this->multiple) {
+            if (is_array($this->items)){
+                return $this->view('translation::components.multi-translation-array-card', $data);
+            }
+
             return $this->view('translation::components.multi-translation-card', $data);
+        }
+
+        if (is_array($this->items)){
+            return $this->view('translation::components.translation-array-card', $data);
         }
 
         return $this->view('translation::components.translation-card', $data);
