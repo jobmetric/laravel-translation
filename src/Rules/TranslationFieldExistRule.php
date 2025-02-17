@@ -14,8 +14,9 @@ class TranslationFieldExistRule implements Rule
     private int|null $object_id;
     private int|null $parent_id;
     private array $parent_where;
+    private string $field_name_trans;
 
-    public function __construct(string $class_name, string $field_name = 'title', string|null $locale = null, int|null $object_id = null, int|null $parent_id = -1, array $parent_where = [])
+    public function __construct(string $class_name, string $field_name = 'title', string|null $locale = null, int|null $object_id = null, int|null $parent_id = -1, array $parent_where = [], string $field_name_trans = 'translation::base.rule.default_field')
     {
         $this->class_name = $class_name;
         $this->field_name = $field_name;
@@ -29,6 +30,7 @@ class TranslationFieldExistRule implements Rule
         $this->object_id = $object_id;
         $this->parent_id = $parent_id;
         $this->parent_where = $parent_where;
+        $this->field_name_trans = $field_name_trans;
     }
 
     /**
@@ -75,6 +77,6 @@ class TranslationFieldExistRule implements Rule
      */
     public function message(): string
     {
-        return trans('translation::base.rule.exist', ['field' => $this->field_name]);
+        return trans('translation::base.rule.exist', ['field' => trans($this->field_name_trans)]);
     }
 }

@@ -14,6 +14,7 @@ return [
 
     "rule" => [
         "exist" => "فیلد :field از قبل وجود دارد.",
+        "default_field" => "نام",
     ],
 
     "components" => [

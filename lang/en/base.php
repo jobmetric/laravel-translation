@@ -14,6 +14,7 @@ return [
 
     "rule" => [
         "exist" => "The :field field already exists.",
+        "default_field" => "Name",
     ],
 
     "components" => [
