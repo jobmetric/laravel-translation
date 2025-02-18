@@ -71,10 +71,10 @@
                                             @endif
                                             <div class="mb-10">
                                                 <label class="form-label d-flex justify-content-between align-items-center">
-                                                    <span>{{ trans(str_replace('{field}', $item, $transScope) . '.title') }}</span>
-                                                    <div class="text-gray-600 fs-7 d-none d-md-block d-lg-none d-xl-block">{{ trans(str_replace('{field}', $item, $transScope) . '.info') }}</div>
+                                                    <span>{{ trans('translation::base.components.translation_card.fields.'.$item.'.label') }}</span>
+                                                    <div class="text-gray-600 fs-7 d-none d-md-block d-lg-none d-xl-block">{!! trans('translation::base.components.translation_card.fields.'.$item.'.info') !!}}</div>
                                                 </label>
-                                                <input type="text" name="translation[{{ $language_value->locale }}][{{ $item }}]" placeholder="{{ trans(str_replace('{field}', $item, $transScope) . '.placeholder') }}" value="{{ $values[$item] ?? '' }}" id="translation_{{ $language_value->locale }}_{{ $item }}" class="form-control" data-name="translation.{{ $language_value->locale }}.{{ $item }}">
+                                                <input type="text" name="translation[{{ $language_value->locale }}][{{ $item }}]" placeholder="{{ trans('translation::base.components.translation_card.fields.'.$item.'.placeholder') }}" value="{{ $values[$item] ?? '' }}" id="translation_{{ $language_value->locale }}_{{ $item }}" class="form-control" data-name="translation.{{ $language_value->locale }}.{{ $item }}">
                                                 <div class="text-gray-600 fs-7 mt-2 d-md-none d-lg-block d-xl-none">{{ trans(str_replace('{field}', $item, $transScope) . '.title') }}</div>
                                                 @error('translation.' . $language_value->locale . '.' . $item)
                                                 <div class="form-errors text-danger fs-7 mt-2">{{ $message }}</div>

@@ -78,6 +78,6 @@
     </div>
 
     <div class="mt-10 d-flex justify-content-end">
-        <button type="submit" class="btn btn-sm btn-primary">ذخیره</button>
+        <button type="submit" class="btn btn-sm btn-primary">{{ trans('panelio::base.button.save') }}</button>
     </div>
 </form>
