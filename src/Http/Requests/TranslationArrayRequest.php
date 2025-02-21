@@ -67,7 +67,11 @@ trait TranslationArrayRequest
         $translations = (new $model_name)->translationAllowFields();
 
         foreach ($translations as $item) {
-            $params["translation.$locale.$item"] = trans(str_replace('{field}', $item, $trans_scope));
+            if ($item == 'meta_title' || $item == 'meta_description' || $item == 'meta_keywords') {
+                $params["translation.$locale.$item"] = trans('translation::base.components.translation_card.fields.'.$item.'.label');
+            } else {
+                $params["translation.$locale.$item"] = trans(str_replace('{field}', $item, $trans_scope));
+            }
         }
     }
 }
