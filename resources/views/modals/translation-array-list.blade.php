@@ -36,7 +36,7 @@
                         <span>{{ trans(str_replace('{field}', $item, $trans_scope) . '.title') }}</span>
                         <div class="text-gray-600 fs-7 d-none d-md-block d-lg-none d-xl-block">{{ trans(str_replace('{field}', $item, $trans_scope) . '.info') }}</div>
                     </label>
-                    <input type="text" name="translation[{{ app()->getLocale() }}][name]" placeholder="{{ trans(str_replace('{field}', $item, $trans_scope) . '.placeholder') }}" class="form-control modal-translation-field" id="modal_translation_field_{{ $item }}" data-name="translation.{{ app()->getLocale() }}.{{ $item }}">
+                    <input type="text" name="translation[{{ app()->getLocale() }}][{{ $item }}]" placeholder="{{ trans(str_replace('{field}', $item, $trans_scope) . '.placeholder') }}" class="form-control modal-translation-field" id="modal_translation_field_{{ $item }}" data-name="translation.{{ app()->getLocale() }}.{{ $item }}">
                     <div class="text-gray-600 fs-7 mt-2 d-md-none d-lg-block d-xl-none">{{ trans(str_replace('{field}', $item, $trans_scope) . '.title') }}</div>
                     <div class="modal-translation-errors text-danger fs-7 mt-2" data-name="translation.{{ app()->getLocale() }}.{{ $item }}"></div>
                 </div>
@@ -54,7 +54,7 @@
                             <span>{{ trans('translation::base.components.translation_card.fields.'.$item.'.label') }}</span>
                             <div class="text-gray-600 fs-7 d-none d-md-block d-lg-none d-xl-block">{!! trans('translation::base.components.translation_card.fields.'.$item.'.info') !!}</div>
                         </label>
-                        <input type="text" name="translation[{{ app()->getLocale() }}][{{ $item }}}]" placeholder="{{ trans('translation::base.components.translation_card.fields.'.$item.'.placeholder') }}" class="form-control modal-translation-field" id="modal_translation_field_{{ $item }}" data-name="translation.{{ app()->getLocale() }}.{{ $item }}">
+                        <input type="text" name="translation[{{ app()->getLocale() }}][{{ $item }}]" placeholder="{{ trans('translation::base.components.translation_card.fields.'.$item.'.placeholder') }}" class="form-control modal-translation-field" id="modal_translation_field_{{ $item }}" data-name="translation.{{ app()->getLocale() }}.{{ $item }}">
                         <div class="text-gray-600 fs-7 mt-2 d-md-none d-lg-block d-xl-none">{{ trans(str_replace('{field}', $item, $trans_scope) . '.title') }}</div>
                         <div class="modal-translation-errors text-danger fs-7 mt-2" data-name="translation.{{ app()->getLocale() }}.{{ $item }}"></div>
                     </div>
