@@ -1,13 +1,13 @@
 <?php
 
-namespace JobMetric\Translation\ServiceType;
+namespace JobMetric\Translation\Typeify;
 
 use JobMetric\CustomField\CustomField;
 
 /**
  * Class Translation
  *
- * @package JobMetric\Translation\ServiceType
+ * @package JobMetric\Translation
  */
 class Translation
 {

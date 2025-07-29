@@ -2,7 +2,7 @@
 
 namespace JobMetric\Translation;
 
-use JobMetric\Translation\ServiceType\Translation;
+use JobMetric\Translation\Typeify\Translation;
 
 /**
  * HasDynamicTranslation

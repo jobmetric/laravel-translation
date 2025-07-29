@@ -5,7 +5,7 @@ namespace JobMetric\Translation\Http\Requests;
 use Illuminate\Support\Collection;
 use JobMetric\Language\Facades\Language;
 use JobMetric\Translation\Rules\TranslationFieldExistRule;
-use JobMetric\Translation\ServiceType\Translation;
+use JobMetric\Translation\Typeify\Translation;
 
 trait MultiTranslationTypeObjectRequest
 {

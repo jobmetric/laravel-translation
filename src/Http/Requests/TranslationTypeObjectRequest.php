@@ -4,7 +4,7 @@ namespace JobMetric\Translation\Http\Requests;
 
 use Illuminate\Support\Collection;
 use JobMetric\Translation\Rules\TranslationFieldExistRule;
-use JobMetric\Translation\ServiceType\Translation;
+use JobMetric\Translation\Typeify\Translation;
 
 trait TranslationTypeObjectRequest
 {

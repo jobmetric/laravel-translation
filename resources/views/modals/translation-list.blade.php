@@ -5,7 +5,7 @@
 
     @php
         $hasSeo = false;
-        $items->each(function (\JobMetric\Translation\ServiceType\Translation $translation) use (&$hasSeo) {
+        $items->each(function (\JobMetric\Translation\Typeify\Translation $translation) use (&$hasSeo) {
             if (str_contains($translation->customField->params['name'] ?? '', 'meta_title')) {
                 $hasSeo = true;
                 return false;
@@ -30,7 +30,7 @@
             @foreach($items as $item)
                 @php
                     /**
-                     * @var \JobMetric\Translation\ServiceType\Translation $item
+                     * @var \JobMetric\Translation\Typeify\Translation $item
                      */
                 @endphp
                 @if(str_contains($item->customField->params['name'] ?? '', 'meta_title') ||
@@ -55,7 +55,7 @@
                 @foreach($items as $item)
                     @php
                         /**
-                         * @var \JobMetric\Translation\ServiceType\Translation $item
+                         * @var \JobMetric\Translation\Typeify\Translation $item
                          */
                     @endphp
                     @if(!(str_contains($item->customField->params['name'] ?? '', 'meta_title') ||

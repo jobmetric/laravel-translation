@@ -1,19 +1,18 @@
 <?php
 
-namespace JobMetric\Translation;
+namespace JobMetric\Translation\Typeify;
 
 use Closure;
 use Illuminate\Support\Collection;
 use JobMetric\CustomField\CustomFieldBuilder;
-use JobMetric\Translation\ServiceType\TranslationBuilder;
 use Throwable;
 
 /**
- * Trait TranslationServiceType
+ * Trait HasTranslationType
  *
  * @package JobMetric\Translation
  */
-trait TranslationServiceType
+trait HasTranslationType
 {
     /**
      * The translation custom fields
