@@ -17,4 +17,8 @@ return [
         "default_field" => "Name",
     ],
 
+    "exceptions" => [
+        "model_not_use_trait" => "Model :model not use JobMetric\Translation\HasTranslation Trait!"
+    ],
+
 ];
