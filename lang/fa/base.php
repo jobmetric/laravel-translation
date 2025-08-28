@@ -18,7 +18,8 @@ return [
     ],
 
     "exceptions" => [
-        "model_not_use_trait" => "مدل :model از Trait مربوط به JobMetric\Translation\HasTranslation استفاده نمی‌کند!"
+        "model_not_use_trait" => "مدل :model از Trait مربوط به JobMetric\Translation\HasTranslation استفاده نمی‌کند!",
+        "disallow_field" => "مدل :model اجازه ترجمه فیلد یا فیلدهای :field را ندارد.",
     ],
 
 ];

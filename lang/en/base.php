@@ -18,7 +18,8 @@ return [
     ],
 
     "exceptions" => [
-        "model_not_use_trait" => "Model :model not use JobMetric\Translation\HasTranslation Trait!"
+        "model_not_use_trait" => "Model :model not use JobMetric\Translation\HasTranslation Trait!",
+        "disallow_field" => "The model :model does not allow the field or fields :field to be translated.",
     ],
 
 ];
