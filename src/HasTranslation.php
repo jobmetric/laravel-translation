@@ -196,6 +196,7 @@ trait HasTranslation
      * Relation filtered by locale.
      *
      * @param string $locale
+     *
      * @return MorphMany
      */
     public function translationsTo(string $locale): MorphMany
@@ -209,6 +210,7 @@ trait HasTranslation
      * @param Builder $query
      * @param string $field
      * @param string|null $locale
+     *
      * @return Builder
      */
     public function scopeHasTranslationField(Builder $query, string $field, ?string $locale = null): Builder
@@ -228,6 +230,7 @@ trait HasTranslation
      *
      * @param string $locale
      * @param array<string, string|null> $data
+     *
      * @return static
      * @throws Throwable
      */
@@ -263,7 +266,11 @@ trait HasTranslation
                     'version' => $nextVersion,
                 ]);
 
-                event(new TranslationStoredEvent($this, $locale, [$field => $value]));
+                event(new TranslationStoredEvent($this, $locale, [
+                    'field' => $field,
+                    'value' => $value,
+                    'version' => $nextVersion,
+                ]));
             }
 
             return $this;
@@ -275,7 +282,11 @@ trait HasTranslation
                 ['value' => $value]
             );
 
-            event(new TranslationStoredEvent($this, $locale, [$field => $value]));
+            event(new TranslationStoredEvent($this, $locale, [
+                'field' => $field,
+                'value' => $value,
+                'version' => 1,
+            ]));
         }
 
         return $this;
@@ -287,6 +298,7 @@ trait HasTranslation
      * @param string $locale
      * @param string $field
      * @param string|null $value
+     *
      * @return static
      * @throws Throwable
      */
@@ -299,6 +311,7 @@ trait HasTranslation
      * Batch translate: ['fa' => [...], 'en' => [...]].
      *
      * @param array<string, array<string, string|null>> $payload
+     *
      * @return static
      * @throws Throwable
      */
@@ -319,6 +332,7 @@ trait HasTranslation
      *
      * @param string $field
      * @param string|null $locale
+     *
      * @return bool
      */
     public function hasTranslationField(string $field, ?string $locale = null): bool
@@ -336,6 +350,7 @@ trait HasTranslation
      * @param string $field
      * @param string|null $locale
      * @param int|null $version
+     *
      * @return string|null
      */
     public function getTranslation(string $field, ?string $locale = null, ?int $version = null): ?string
@@ -374,6 +389,7 @@ trait HasTranslation
      * - without $locale: ['fa' => [...], 'en' => [...]]
      *
      * @param string|null $locale
+     *
      * @return array<string, mixed>
      */
     public function getTranslations(?string $locale = null): array
@@ -398,6 +414,7 @@ trait HasTranslation
      *
      * @param string $field
      * @param string|null $locale
+     *
      * @return int
      */
     public function latestTranslationVersion(string $field, ?string $locale = null): int
@@ -418,6 +435,7 @@ trait HasTranslation
      *
      * @param string $field
      * @param string|null $locale
+     *
      * @return array<int, array{version:int, value:string|null, deleted_at:string|null}>
      */
     public function getTranslationVersions(string $field, ?string $locale = null): array
@@ -444,6 +462,7 @@ trait HasTranslation
      * @param string $field
      * @param string $locale
      * @param bool $force
+     *
      * @return static
      */
     public function forgetTranslation(string $field, string $locale, bool $force = false): static
@@ -453,6 +472,7 @@ trait HasTranslation
 
         $records->each(function ($translation) use ($force) {
             $force ? $translation->forceDelete() : $translation->delete();
+
             event(new TranslationForgetEvent($translation));
         });
 
@@ -465,6 +485,7 @@ trait HasTranslation
      *
      * @param string|null $locale
      * @param bool $force
+     *
      * @return static
      */
     public function forgetTranslations(?string $locale = null, bool $force = false): static
@@ -474,6 +495,7 @@ trait HasTranslation
 
         $records->each(function ($translation) use ($force) {
             $force ? $translation->forceDelete() : $translation->delete();
+
             event(new TranslationForgetEvent($translation));
         });
 
@@ -498,6 +520,7 @@ trait HasTranslation
      * Merge fields into whitelist. Removes '*' if present to narrow scope.
      *
      * @param array<int, string> $fields
+     *
      * @return void
      */
     public function mergeTranslatables(array $fields): void
@@ -517,6 +540,7 @@ trait HasTranslation
      * Remove a field from whitelist. If becomes empty, reverts to ['*'].
      *
      * @param string $field
+     *
      * @return void
      */
     public function removeTranslatableField(string $field): void
@@ -560,6 +584,7 @@ trait HasTranslation
      * @param string $field
      * @param string $value
      * @param string|null $locale
+     *
      * @return Builder
      */
     public function scopeWhereTranslationEquals(
@@ -587,6 +612,7 @@ trait HasTranslation
      * @param string $field
      * @param string $needle
      * @param string|null $locale
+     *
      * @return Builder
      */
     public function scopeWhereTranslationLike(
@@ -619,6 +645,7 @@ trait HasTranslation
      * @param string $field
      * @param string $needle
      * @param string|null $locale
+     *
      * @return Builder
      */
     public function scopeSearchTranslation(
