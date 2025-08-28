@@ -142,21 +142,21 @@ trait HasTranslation
             $model->innerTranslations = [];
         });
 
-        // Parent without SoftDeletes: on deleted -> soft-delete child translations (no restore path here)
+        // Parent without SoftDeletes: on deleted -> soft-delete child translations
         static::deleted(function (Model $model) {
-            if (!is_subclass_of(static::class, SoftDeletes::class)) {
+            if (!in_array(SoftDeletes::class, class_uses_recursive($model), true)) {
                 $model->translations()->delete();
             }
         });
 
         // Parent with SoftDeletes
-        if (is_subclass_of(static::class, SoftDeletes::class)) {
-            // On soft-deleting the parent, soft-delete active child translations
+        if (in_array(SoftDeletes::class, class_uses_recursive(static::class), true)) {
+            // Soft-delete active child translations when parent is soft-deleted
             static::deleted(function (Model $model) {
                 $model->translations()->delete();
             });
 
-            // On restoring the parent, restore only the latest version per (locale, field)
+            // Restore only the latest version per (locale, field) when parent is restored
             static::restored(function (Model $model) {
                 $latest = $model->translations()
                     ->withTrashed()
@@ -175,7 +175,7 @@ trait HasTranslation
                 }
             });
 
-            // On force-deleting the parent, remove all translation history
+            // Remove all translation history on force delete
             static::forceDeleted(function (Model $model) {
                 $model->translations()->withTrashed()->forceDelete();
             });
