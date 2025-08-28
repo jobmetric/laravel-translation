@@ -4,6 +4,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as CollectionSupport;
 use JobMetric\Translation\Exceptions\ModelHasTranslationNotFoundException;
+use JobMetric\Translation\HasTranslation;
 
 if (!function_exists('translation')) {
     /**
@@ -17,7 +18,7 @@ if (!function_exists('translation')) {
      */
     function translation(Model $model, array $data = []): void
     {
-        if (!in_array('JobMetric\Translation\HasTranslation', class_uses($model))) {
+        if (!is_subclass_of($model, HasTranslation::class)) {
             throw new ModelHasTranslationNotFoundException($model::class);
         }
 

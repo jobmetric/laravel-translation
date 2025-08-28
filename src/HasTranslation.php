@@ -144,13 +144,13 @@ trait HasTranslation
 
         // Parent without SoftDeletes: on deleted -> soft-delete child translations (no restore path here)
         static::deleted(function (Model $model) {
-            if (!in_array(SoftDeletes::class, class_uses_recursive($model))) {
+            if (!is_subclass_of(static::class, SoftDeletes::class)) {
                 $model->translations()->delete();
             }
         });
 
         // Parent with SoftDeletes
-        if (in_array(SoftDeletes::class, class_uses_recursive(static::class))) {
+        if (is_subclass_of(static::class, SoftDeletes::class)) {
             // On soft-deleting the parent, soft-delete active child translations
             static::deleted(function (Model $model) {
                 $model->translations()->delete();
