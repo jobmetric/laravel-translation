@@ -2,17 +2,17 @@
 
 namespace JobMetric\Translation\Events;
 
-use Illuminate\Database\Eloquent\Model;
+use JobMetric\Translation\Models\Translation;
 
 class TranslationForgetEvent
 {
-    public Model $model;
+    public Translation $translation;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Model $model)
+    public function __construct(Translation $translation)
     {
-        $this->model = $model;
+        $this->translation = $translation;
     }
 }
