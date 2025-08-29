@@ -3,6 +3,7 @@
 namespace JobMetric\Translation\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use JobMetric\Language\LanguageServiceProvider;
 use JobMetric\Translation\TranslationServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -13,6 +14,7 @@ class TestCase extends BaseTestCase
     protected function getPackageProviders($app): array
     {
         return [
+            LanguageServiceProvider::class,
             TranslationServiceProvider::class,
         ];
     }
