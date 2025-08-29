@@ -239,4 +239,4 @@ Array
 
 Use it inside your FormRequests or manual validators to keep your translated attributes consistent and conflict‑free.
 
-[Next To Events](https://github.com/jobmetric/laravel-translation/blob/master/dosc/Events.md)
+[Next To Events](https://github.com/jobmetric/laravel-translation/blob/master/docs/Events.md)

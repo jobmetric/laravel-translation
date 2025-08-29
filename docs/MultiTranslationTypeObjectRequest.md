@@ -280,4 +280,4 @@ new TypeTranslation([
 
 Use the examples above as a template in your FormRequest classes to validate complex translation payloads consistently across locales.
 
-[Next To Request - TranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationArrayRequest.md)
+[Next To Request - TranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationArrayRequest.md)

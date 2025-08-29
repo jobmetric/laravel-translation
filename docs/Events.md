@@ -31,4 +31,4 @@ class InvalidateCaches
 }
 ```
 
-[Next To Resource - TranslationCollection](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationCollectionResource.md)
+[Next To Resource - TranslationCollection](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationCollectionResource.md)

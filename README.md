@@ -104,15 +104,15 @@ $title = $post->getTranslation('title', 'fa');   // 'سلام'
 
 👉 Dive deeper in **/docs**:
 
-- [Main Trait - HasTranslation](https://github.com/jobmetric/laravel-translation/blob/master/dosc/HasTranslation.md)
-- [Rule TranslationFieldExist](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationFieldExistRule.md)
-- [Events](https://github.com/jobmetric/laravel-translation/blob/master/dosc/Events.md)
-- [Resource - TranslationCollection](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationCollectionResource.md)
-- [Resource - Translation](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationResource.md)
-- [Request - MultiTranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/dosc/MultiTranslationArrayRequest.md)
-- [Request - MultiTranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/dosc/MultiTranslationTypeObjectRequest.md)
-- [Request - TranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationArrayRequest.md)
-- [Request - TranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationTypeObjectRequest.md)
+- [Main Trait - HasTranslation](https://github.com/jobmetric/laravel-translation/blob/master/docs/HasTranslation.md)
+- [Rule TranslationFieldExist](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationFieldExistRule.md)
+- [Events](https://github.com/jobmetric/laravel-translation/blob/master/docs/Events.md)
+- [Resource - TranslationCollection](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationCollectionResource.md)
+- [Resource - Translation](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationResource.md)
+- [Request - MultiTranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/docs/MultiTranslationArrayRequest.md)
+- [Request - MultiTranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/docs/MultiTranslationTypeObjectRequest.md)
+- [Request - TranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationArrayRequest.md)
+- [Request - TranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationTypeObjectRequest.md)
 
 
 ## Contributing

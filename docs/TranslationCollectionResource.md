@@ -261,4 +261,4 @@ This ensures stable and predictable outputs whether or not you include historica
 
 Use the chaining methods to quickly tailor outputs to your API consumers.
 
-[Next To Resource - Translation](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationResource.md)
+[Next To Resource - Translation](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationResource.md)

@@ -355,4 +355,4 @@ The `HasTranslation` trait makes it easy to manage multilingual content in your 
 
 This allows you to keep your models clean, your translations structured, and your application fully multilingual.
 
-[Next To Rule TranslationFieldExist](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationFieldExistRule.md)
+[Next To Rule TranslationFieldExist](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationFieldExistRule.md)

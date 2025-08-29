@@ -219,4 +219,4 @@ return (new TranslationResource($translation))
 
 `TranslationResource` gives you a small, reliable surface to serialize a single translation row. Toggle version, timestamps, and soft‑deletion data as needed, keep your controllers lean, and your API responses consistent.
 
-[Next To Request - MultiTranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/dosc/MultiTranslationArrayRequest.md)
+[Next To Request - MultiTranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/docs/MultiTranslationArrayRequest.md)

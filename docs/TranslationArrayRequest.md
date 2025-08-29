@@ -258,4 +258,4 @@ It automatically:
 - Adds optional string rules for other allowed fields
 - Generates readable attribute labels for clean error messages
 
-[Next To Request - TranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationTypeObjectRequest.md)
+[Next To Request - TranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationTypeObjectRequest.md)

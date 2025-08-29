@@ -359,4 +359,4 @@ Array
 
 Copy the snippets above into your `FormRequest` classes, and you’re ready to validate multi-locale translation payloads with clear error messages and clean structure.
 
-[Next To Request - MultiTranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/dosc/MultiTranslationTypeObjectRequest.md)
+[Next To Request - MultiTranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/docs/MultiTranslationTypeObjectRequest.md)
