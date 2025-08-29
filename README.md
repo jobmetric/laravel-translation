@@ -15,9 +15,27 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-# Translation for laravel
+# Translation for Laravel
 
-This is a package for translating the contents of different Laravel projects.
+Laravel-Translation is a powerful package that simplifies the management of multilingual content within Laravel applications. It offers dynamic translation storage, retrieval, and updates, seamlessly integrating with your models through the HasTranslation trait. The core features include:
+
+> **Package:** `jobmetric/laravel-translation`  
+> **PHP:** 8.1+ (8.2+ recommended) · **Laravel:** 9/10/11  
+> **Provider:** `JobMetric\Translation\TranslationServiceProvider`
+
+## Highlights
+
+🔧 **Custom Validation:** Ensures translation data integrity with flexible rules and error handling.
+
+🌟 **Model Integration:** Supports multi-language attributes with versioning, soft deletes, and event-driven updates.
+
+🗃️ **API Resources:** Provides structured serialization for translation data, facilitating API responses.
+
+⚙️ **Extensible Architecture:** Includes custom exceptions, event handling, and dynamic translation management for scalable localization.
+
+🔍 **Query Support:** Enables scope queries and relationship management for efficient multilingual data handling.
+
+🗣️ **Language Files:** Centralized language files for consistent, maintainable multilingual user communication.
 
 ## Install via composer
 
@@ -44,199 +62,58 @@ Meet the `HasTranslation` class, meticulously designed for integration into your
 
 In the first step, you need to connect this class to your main model.
 
+## Quickstart
+
 ```php
+use Illuminate\Database\Eloquent\Model;
 use JobMetric\Translation\HasTranslation;
 
 class Post extends Model
 {
     use HasTranslation;
+
+    /**
+     * @var array<int, string>
+     */
+    protected array $translatables = ['title', 'summary', 'body'];
+    
+    /**
+     * @var bool
+     */
+    protected bool $translationVersioning = true;
 }
-```
 
-When you add this class, you will have to implement `TranslationContract` to your model.
+// Create & attach translations
+$post = Post::create(['status' => 'published']);
 
-```php
-use JobMetric\Translation\Contracts\TranslationContract;
+$post->translate('en', ['title' => 'Hello', 'body' => 'Welcome']);
+$post->translate('fa', ['title' => 'سلام', 'body' => 'خوش آمدید']);
 
-class Post extends Model implements TranslationContract
-{
-    use HasTranslation;
-}
-```
-
-Now you have to use the translationAllowFields function and you have to add it to your model.
-
-```php
-use JobMetric\Translation\Contracts\TranslationContract;
-
-class Post extends Model implements TranslationContract
-{
-    use HasTranslation;
-
-    public function translationAllowFields(): array
-    {
-        return [
-            'title',
-            'body',
-        ];
-    }
-}
-```
-
-> This function is for you to declare what translation fields you need for this model, and you should return them here as an `array`.
-
-## How is it used?
-
-Now, you can use the `HasTranslation` class to translate your model. The following example demonstrates how to create a new post with translations:
-
-```php
+OR
 
 $post = Post::create([
-    'status' => 'published',
+    'status' => 'published'
+    'translations' => [
+        'en' => ['title' => 'Hello', 'body' => 'Welcome'],
+        'fa' => ['title' => 'سلام', 'body' => 'خوش آمدید'],
+    ],
 ]);
-
-$post->translate('en', [
-    'title' => 'Post title',
-    'body' => 'Post body',
-]);
-
-$post->translate('de', [
-    'title' => 'Post Titel',
-    'body' => 'Post Inhalt',
-]);
-
-$post->translate('fr', [
-    'title' => 'Titre de la publication',
-    'body' => 'Corps de poste',
-]);
-
-$post->translate('fa', [
-    'title' => 'عنوان پست',
-    'body' => 'متن پست',
-]);
+// Read
+$title = $post->getTranslation('title', 'fa');   // 'سلام'
 ```
 
-> You could also do this inside a `foreach`, it was more for show off.
+👉 Dive deeper in **/docs**:
 
-You can also use the `translate` method to update the translations:
+- [Main Trait - HasTranslation](https://github.com/jobmetric/laravel-translation/blob/master/dosc/HasTranslation.md)
+- [Rule TranslationFieldExist](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationFieldExistRule.md)
+- [Events](https://github.com/jobmetric/laravel-translation/blob/master/dosc/Events.md)
+- [Resource - TranslationCollection](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationCollectionResource.md)
+- [Resource - Translation](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationResource.md)
+- [Request - MultiTranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/dosc/MultiTranslationArrayRequest.md)
+- [Request - MultiTranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/dosc/MultiTranslationTypeObjectRequest.md)
+- [Request - TranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationArrayRequest.md)
+- [Request - TranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/dosc/TranslationTypeObjectRequest.md)
 
-```php
-
-$post->translate('de', [
-    'title' => 'Post Titel',
-    'body' => 'Post Inhalt',
-]);
-```
-
-### Now we go to the functions that we have added to our model.
-
-### `translation`
-
-translation has one relationship
-
-### `translations`
-
-translation has many relationships
-
-### `translationTo`
-
-scope locale for select translation relationship
-
-```php
-Post::translationTo('en')->get();
-
-// or
-
-Post::where('status', 'published')->translationTo('en')->get();
-```
-
-### `translationsTo`
-
-scope locale for select translations relationship
-
-```php
-Post::translationsTo('en')->get();
-
-// or
-
-Post::where('status', 'published')->translationsTo('en')->get();
-```
-
-### `translate`
-
-store translates for the model
-
-```php
-$post->translate('en', [
-    'title' => 'Post title',
-    'body' => 'Post body',
-]);
-```
-
-### `withTranslation`
-
-load translation after model loaded
-
-```php
-$post = Post::query()->where('id', 1)->first()->withTranslation('en', 'title');
-```
-
-### `withTranslations`
-
-load translations after model loaded
-
-```php
-$post = Post::query()->where('id', 1)->first()->withTranslations();
-```
-
-### `hasTranslationField`
-
-check model has translation field
-
-```php
-$post->hasTranslationField('title');
-```
-
-### `getTranslation`
-
-get translation for the model
-
-```php
-$post->getTranslation('title');
-```
-
-### `getTranslations`
-
-get translations for the model
-
-```php
-$post->getTranslations();
-```
-
-### `forgetTranslation`
-
-forget translation for the model
-
-```php
-$post->forgetTranslation('title', 'en');
-```
-
-### `forgetTranslations`
-
-forget translations for the model
-
-```php
-$post->forgetTranslations('en');
-```
-
-## Events
-
-This package contains several events for which you can write a listener as follows
-
-| Event                    | Description                                            |
-|--------------------------|--------------------------------------------------------|
-| `TranslationStoredEvent` | This event is called after storing the translation.    |
-| `TranslationForgetEvent` | This event is called after forgetting the translation. |
 
 ## Contributing
 
