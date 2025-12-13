@@ -22,4 +22,20 @@ return [
         "disallow_field" => "The model :model does not allow the field or fields :field to be translated.",
     ],
 
+    "entity_names" => [
+        "translation" => "Translation",
+    ],
+
+    'events' => [
+        'translation_stored' => [
+            'title' => 'Translation Stored',
+            'description' => 'This event is triggered when a translation is stored.',
+        ],
+
+        'translation_forgotten' => [
+            'title' => 'Translation Forgotten',
+            'description' => 'This event is triggered when a translation is forgotten.',
+        ],
+    ],
+
 ];

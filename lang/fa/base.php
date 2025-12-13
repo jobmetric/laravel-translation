@@ -22,4 +22,20 @@ return [
         "disallow_field" => "مدل :model اجازه ترجمه فیلد یا فیلدهای :field را ندارد.",
     ],
 
+    "entity_names" => [
+        "translation" => "ترجمه",
+    ],
+
+    'events' => [
+        'translation_stored' => [
+            'title' => 'ذخیره ترجمه',
+            'description' => 'هنگامی که یک ترجمه ذخیره می‌شود، این رویداد فعال می‌شود.',
+        ],
+
+        'translation_forgotten' => [
+            'title' => 'فراموشی ترجمه',
+            'description' => 'هنگامی که یک ترجمه فراموش می‌شود، این رویداد فعال می‌شود.',
+        ],
+    ],
+
 ];
