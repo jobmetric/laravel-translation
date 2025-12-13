@@ -8,7 +8,7 @@ on:
 
 jobs:
   notify-pr:
-    uses: jobmetric/github-notify/.github/workflows/telegram-open-pull-request-notify.yml@master
+    uses: jobmetric/github-notify/.github/workflows/telegram-pull-request-open-notify.yml@master
     secrets:
       bot_token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       chat_id: ${{ secrets.TELEGRAM_CHAT_ID }}
