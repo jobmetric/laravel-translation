@@ -1,0 +1,61 @@
+name: Bug Report
+description: Report an Issue or Bug with the Laravel Translation
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We're sorry to hear you have a problem. Can you help us solve it by providing the following details.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What Happened
+      description: What did you expect to happen?
+      placeholder: When I try to translate a model field, I get an incorrect result
+    validations:
+      required: true
+  - type: textarea
+    id: how-to-reproduce
+    attributes:
+      label: How to Reproduce
+      description: How did this occur, please add any command or code used and provide a set of reliable steps if possible.
+      placeholder: |
+        Using HasTranslation trait:
+        use JobMetric\Translation\HasTranslation;
+        
+        class Post extends Model
+        {
+            use HasTranslation;
+            protected array $translatables = ['title', 'body'];
+        }
+        
+        $post = Post::create(['status' => 'published']);
+        $post->translate('en', ['title' => 'Hello', 'body' => 'Welcome']);
+    validations:
+      required: true
+  - type: input
+    id: expected-output
+    attributes:
+      label: Expected Output
+      description: What output did you expect to receive?
+      placeholder: "Translation should be stored correctly in the database"
+    validations:
+      required: true
+  - type: input
+    id: actual-output
+    attributes:
+      label: Actual Output
+      description: What output did you actually receive?
+      placeholder: "Translation is not stored or returns null"
+    validations:
+      required: true
+  - type: input
+    id: package-version
+    attributes:
+      label: Package Version
+      description: What version of Laravel Translation are you running? Please be as specific as possible
+      placeholder: 1.0.0
+    validations:
+      required: true
+
