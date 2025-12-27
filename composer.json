@@ -24,10 +24,10 @@
         "php": ">=8.0.1",
         "ext-json": "*",
         "laravel/framework": ">=9.19",
-        "jobmetric/laravel-package-core": "^1.18.5",
-        "jobmetric/laravel-metadata": "^2.2",
-        "jobmetric/laravel-language": "^2.3",
-        "jobmetric/laravel-custom-field": "^1.11",
+        "jobmetric/laravel-package-core": "^1.34",
+        "jobmetric/laravel-metadata": "^3.5",
+        "jobmetric/laravel-language": "^2.4",
+        "jobmetric/laravel-custom-field": "^2.1",
         "jobmetric/laravel-event-system": "^2.7"
     },
     "autoload": {
