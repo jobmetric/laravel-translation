@@ -15,110 +15,80 @@
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-# Translation for Laravel
+# Laravel Translation
 
-Laravel-Translation is a powerful package that simplifies the management of multilingual content within Laravel applications. It offers dynamic translation storage, retrieval, and updates, seamlessly integrating with your models through the HasTranslation trait. The core features include:
+**Build Multilingual Applications. Effortlessly.**
 
-> **Package:** `jobmetric/laravel-translation`  
-> **PHP:** 8.1+ (8.2+ recommended) · **Laravel:** 9/10/11  
-> **Provider:** `JobMetric\Translation\TranslationServiceProvider`
+Laravel Translation simplifies the management of multilingual content within Laravel applications. Stop managing translations manually and start building truly multilingual applications with ease. It offers dynamic translation storage, retrieval, and updates, seamlessly integrating with your models through the `HasTranslation` trait. This is where powerful multilingual support meets developer-friendly simplicity—giving you complete control over translation management without the complexity.
 
-## Highlights
+## Why Laravel Translation?
 
-🔧 **Custom Validation:** Ensures translation data integrity with flexible rules and error handling.
+### Seamless Model Integration
 
-🌟 **Model Integration:** Supports multi-language attributes with versioning, soft deletes, and event-driven updates.
+Integrate translations directly with your Eloquent models through a simple trait. No complex setup, no additional services—just add the trait and define which fields should be translatable. Your models become multilingual instantly.
 
-🗃️ **API Resources:** Provides structured serialization for translation data, facilitating API responses.
+### Flexible Field Control
 
-⚙️ **Extensible Architecture:** Includes custom exceptions, event handling, and dynamic translation management for scalable localization.
+You have complete control over which fields can be translated. Whitelist specific fields or allow all fields with a simple configuration. This flexibility ensures you only translate what needs to be translated, keeping your database clean and efficient.
 
-🔍 **Query Support:** Enables scope queries and relationship management for efficient multilingual data handling.
+### Version History Built-In
 
-🗣️ **Language Files:** Centralized language files for consistent, maintainable multilingual user communication.
+Track every change to your translations with optional versioning. See what changed, when it changed, and restore previous versions if needed. Perfect for content management systems where translation history matters.
 
-## Install via composer
+### Powerful Query Capabilities
 
-Run the following command to pull in the latest version:
+Search and filter your models based on translated content. Find products by their translated names, filter posts by translated titles, and build multilingual search functionality with ease.
+
+## What is Translation Management?
+
+Translation management is the process of storing and retrieving content in multiple languages. In a traditional Laravel application, you might store translations in language files or use separate columns for each language. Laravel Translation takes a different approach:
+
+- **Database-Driven**: Translations are stored in the database, making them dynamic and manageable through your application
+- **Per-Field Translations**: Each field can have different translations for different locales
+- **Version Control**: Track changes to translations over time
+- **Query Support**: Search and filter by translated content directly in your queries
+
+Consider a blog post that needs to be available in multiple languages. With Laravel Translation, you can store the title, summary, and body in different locales, retrieve the appropriate translation based on the user's locale, track version history if content changes over time, and search for posts by their translated titles or content. The power of translation management lies not only in storing multiple language versions but also in making them easily accessible, searchable, and manageable throughout your application.
+
+## What Awaits You?
+
+By adopting Laravel Translation, you will:
+
+- **Build truly multilingual applications** - Support as many languages as you need
+- **Simplify translation management** - No more complex translation logic in your code
+- **Improve content management** - Version history and easy updates
+- **Enhance user experience** - Deliver content in users' preferred languages
+- **Scale effortlessly** - Handle translations for thousands of models and fields
+- **Maintain clean code** - Simple, intuitive API that follows Laravel conventions
+
+## Quick Start
+
+Install Laravel Translation via Composer:
+
 ```bash
 composer require jobmetric/laravel-translation
 ```
 
 ## Documentation
 
-Undergoing continuous enhancements, this package evolves each day, integrating an array of diverse features. It stands as an indispensable asset for enthusiasts of Laravel, offering a seamless way to harmonize their projects with translation database models.
+Ready to transform your Laravel applications? Our comprehensive documentation is your gateway to mastering Laravel Translation:
 
-In this package, you can employ it seamlessly with any model requiring database translation.
+**[📚 Read Full Documentation →](https://jobmetric.github.io/packages/laravel-translation/)**
 
-Now, let's delve into the core functionality.
+The documentation includes:
 
->#### Before doing anything, you must migrate after installing the package by composer.
-
-```bash
-php artisan migrate
-```
-
-Meet the `HasTranslation` class, meticulously designed for integration into your model. This class automates essential tasks, ensuring a streamlined process for:
-
-In the first step, you need to connect this class to your main model.
-
-## Quickstart
-
-```php
-use Illuminate\Database\Eloquent\Model;
-use JobMetric\Translation\HasTranslation;
-
-class Post extends Model
-{
-    use HasTranslation;
-
-    /**
-     * @var array<int, string>
-     */
-    protected array $translatables = ['title', 'summary', 'body'];
-    
-    /**
-     * @var bool
-     */
-    protected bool $translationVersioning = true;
-}
-
-// Create & attach translations
-$post = Post::create(['status' => 'published']);
-
-$post->translate('en', ['title' => 'Hello', 'body' => 'Welcome']);
-$post->translate('fa', ['title' => 'سلام', 'body' => 'خوش آمدید']);
-
-OR
-
-$post = Post::create([
-    'status' => 'published'
-    'translations' => [
-        'en' => ['title' => 'Hello', 'body' => 'Welcome'],
-        'fa' => ['title' => 'سلام', 'body' => 'خوش آمدید'],
-    ],
-]);
-// Read
-$title = $post->getTranslation('title', 'fa');   // 'سلام'
-```
-
-👉 Dive deeper in **/docs**:
-
-- [Main Trait - HasTranslation](https://github.com/jobmetric/laravel-translation/blob/master/docs/HasTranslation.md)
-- [Rule TranslationFieldExist](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationFieldExistRule.md)
-- [Events](https://github.com/jobmetric/laravel-translation/blob/master/docs/Events.md)
-- [Resource - TranslationCollection](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationCollectionResource.md)
-- [Resource - Translation](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationResource.md)
-- [Request - MultiTranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/docs/MultiTranslationArrayRequest.md)
-- [Request - MultiTranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/docs/MultiTranslationTypeObjectRequest.md)
-- [Request - TranslationArray](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationArrayRequest.md)
-- [Request - TranslationTypeObject](https://github.com/jobmetric/laravel-translation/blob/master/docs/TranslationTypeObjectRequest.md)
-
+- **Getting Started** - Quick introduction and installation guide
+- **HasTranslation** - Integrate translations into your models
+- **Requests** - Complete API reference for TranslationArrayRequest, MultiTranslationArrayRequest, TranslationTypeObjectRequest, and MultiTranslationTypeObjectRequest
+- **Resources** - TranslationResource and TranslationCollectionResource for API responses
+- **Validation Rules** - TranslationFieldExistRule for ensuring translation uniqueness
+- **Events** - Hook into translation lifecycle
+- **Real-World Examples** - See how it works in practice
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel Translation! The contribution guide can be found in the [CONTRIBUTING.md](https://github.com/jobmetric/laravel-translation/blob/master/CONTRIBUTING.md).
+Thank you for participating in `laravel-translation`. A contribution guide can be found [here](CONTRIBUTING.md).
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/jobmetric/laravel-translation/blob/master/LICENCE.md) for more information.
+The `laravel-translation` is open-sourced software licensed under the MIT license. See [License File](LICENCE.md) for more information.
