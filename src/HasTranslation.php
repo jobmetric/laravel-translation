@@ -29,9 +29,9 @@ use Throwable;
  *
  * @property-read Collection<int, TranslationModel> $translations
  *
- * @method static Builder|static whereTranslationEquals(string $field, string $value, ?string $locale = null)
- * @method static Builder|static whereTranslationLike(string $field, string $needle, ?string $locale = null)
- * @method static Builder|static searchTranslation(string $field, string $needle, ?string $locale = null)
+ * @method static Builder|static hasTranslationField(string $field, ?string $locale = null)
+ * @method static Builder|static whereTranslationField(string $field, string $value, ?string $locale = null)
+ * @method static Builder|static searchTranslationField(string $field, string $needle, ?string $locale = null)
  */
 trait HasTranslation
 {
@@ -68,24 +68,21 @@ trait HasTranslation
         if (function_exists('hasPropertyInClass')) {
             if (hasPropertyInClass($this, 'translatables')) {
                 /** @var array $this ->translatables */
-                $this->baseTranslatables = (is_array($this->translatables) && $this->translatables !== [])
-                    ? array_values($this->translatables)
-                    : ['*'];
+                $this->baseTranslatables = (is_array($this->translatables) && $this->translatables !== []) ? array_values($this->translatables) : ['*'];
             }
             if (hasPropertyInClass($this, 'translationVersioning')) {
                 /** @var bool $this ->translationVersioning */
-                $this->baseTranslationVersioning = (bool)$this->translationVersioning;
+                $this->baseTranslationVersioning = (bool) $this->translationVersioning;
             }
-        } else {
+        }
+        else {
             if (property_exists($this, 'translatables')) {
                 /** @var array $this ->translatables */
-                $this->baseTranslatables = (is_array($this->translatables) && $this->translatables !== [])
-                    ? array_values($this->translatables)
-                    : ['*'];
+                $this->baseTranslatables = (is_array($this->translatables) && $this->translatables !== []) ? array_values($this->translatables) : ['*'];
             }
             if (property_exists($this, 'translationVersioning')) {
                 /** @var bool $this ->translationVersioning */
-                $this->baseTranslationVersioning = (bool)$this->translationVersioning;
+                $this->baseTranslationVersioning = (bool) $this->translationVersioning;
             }
         }
 
@@ -102,21 +99,21 @@ trait HasTranslation
     {
         // Intercept the virtual "translation" attribute
         static::saving(function (Model $model) {
-            if (!isset($model->attributes['translation']) || !is_array($model->attributes['translation'])) {
+            if (! isset($model->attributes['translation']) || ! is_array($model->attributes['translation'])) {
                 return;
             }
 
             $payload = $model->attributes['translation'];
 
             foreach ($payload as $locale => $data) {
-                if (!is_array($data)) {
+                if (! is_array($data)) {
                     continue;
                 }
 
                 $keys = array_keys($data);
-                if (!$model->translatablesAllowAll()) {
+                if (! $model->translatablesAllowAll()) {
                     $diff = array_diff($keys, $model->getTranslatableFields());
-                    if (!empty($diff)) {
+                    if (! empty($diff)) {
                         throw new TranslationDisallowFieldException($model::class, $diff);
                     }
                 }
@@ -133,7 +130,7 @@ trait HasTranslation
             }
 
             foreach ($model->innerTranslations as $locale => $fields) {
-                if (!is_array($fields)) {
+                if (! is_array($fields)) {
                     continue;
                 }
                 $model->translate($locale, $fields);
@@ -144,7 +141,7 @@ trait HasTranslation
 
         // Parent without SoftDeletes: on deleted -> soft-delete child translations
         static::deleted(function (Model $model) {
-            if (!in_array(SoftDeletes::class, class_uses_recursive($model), true)) {
+            if (! in_array(SoftDeletes::class, class_uses_recursive($model), true)) {
                 $model->translations()->delete();
             }
         });
@@ -224,6 +221,56 @@ trait HasTranslation
     }
 
     /**
+     * Scope: filter models by translation field value.
+     * Example: Model::whereTranslationField('code', 'kg')->first()
+     *
+     * @param Builder $query
+     * @param string $field
+     * @param string $value
+     * @param string|null $locale
+     *
+     * @return Builder
+     */
+    public function scopeWhereTranslationField(
+        Builder $query,
+        string $field,
+        string $value,
+        ?string $locale = null
+    ): Builder {
+        return $query->whereHas('translations', function (Builder $q) use ($field, $value, $locale) {
+            $q->where('field', $field)->where('value', $value);
+            if ($locale !== null) {
+                $q->where('locale', $locale);
+            }
+        });
+    }
+
+    /**
+     * Scope: search models by translation field value (case-insensitive like).
+     * Example: Model::searchTranslationField('name', '%john%')->get()
+     *
+     * @param Builder $query
+     * @param string $field
+     * @param string $needle
+     * @param string|null $locale
+     *
+     * @return Builder
+     */
+    public function scopeSearchTranslationField(
+        Builder $query,
+        string $field,
+        string $needle,
+        ?string $locale = null
+    ): Builder {
+        return $query->whereHas('translations', function (Builder $q) use ($field, $needle, $locale) {
+            $q->where('field', $field)->where('value', 'like', $needle);
+            if ($locale !== null) {
+                $q->where('locale', $locale);
+            }
+        });
+    }
+
+    /**
      * Create/update translations for locale.
      * versioning OFF: upsert version=1
      * versioning ON:  soft delete active(s) + insert version=last+1
@@ -238,9 +285,9 @@ trait HasTranslation
     {
         $fields = array_keys($data);
 
-        if (!$this->translatablesAllowAll()) {
+        if (! $this->translatablesAllowAll()) {
             $disallowed = array_diff($fields, $this->getTranslatableFields());
-            if (!empty($disallowed)) {
+            if (! empty($disallowed)) {
                 throw new TranslationDisallowFieldException(self::class, $disallowed);
             }
         }
@@ -257,18 +304,18 @@ trait HasTranslation
                     ->where('field', $field)
                     ->max('version');
 
-                $nextVersion = $last ? ((int)$last + 1) : 1;
+                $nextVersion = $last ? ((int) $last + 1) : 1;
 
                 $this->translations()->create([
-                    'locale' => $locale,
-                    'field' => $field,
-                    'value' => $value,
+                    'locale'  => $locale,
+                    'field'   => $field,
+                    'value'   => $value,
                     'version' => $nextVersion,
                 ]);
 
                 event(new TranslationStoredEvent($this, $locale, [
-                    'field' => $field,
-                    'value' => $value,
+                    'field'   => $field,
+                    'value'   => $value,
                     'version' => $nextVersion,
                 ]));
             }
@@ -277,14 +324,15 @@ trait HasTranslation
         }
 
         foreach ($data as $field => $value) {
-            $this->translations()->updateOrCreate(
-                ['locale' => $locale, 'field' => $field, 'version' => 1],
-                ['value' => $value]
-            );
+            $this->translations()->updateOrCreate([
+                    'locale'  => $locale,
+                    'field'   => $field,
+                    'version' => 1,
+                ], ['value' => $value]);
 
             event(new TranslationStoredEvent($this, $locale, [
-                'field' => $field,
-                'value' => $value,
+                'field'   => $field,
+                'value'   => $value,
                 'version' => 1,
             ]));
         }
@@ -318,7 +366,7 @@ trait HasTranslation
     public function translateBatch(array $payload): static
     {
         foreach ($payload as $locale => $data) {
-            if (!is_array($data)) {
+            if (! is_array($data)) {
                 continue;
             }
             $this->translate($locale, $data);
@@ -395,18 +443,11 @@ trait HasTranslation
     public function getTranslations(?string $locale = null): array
     {
         if ($locale !== null) {
-            return $this->translations()
-                ->where('locale', $locale)
-                ->pluck('value', 'field')
-                ->toArray();
+            return $this->translations()->where('locale', $locale)->pluck('value', 'field')->toArray();
         }
 
-        return $this->translations()
-            ->select(['locale', 'field', 'value'])
-            ->get()
-            ->groupBy('locale')
-            ->map(fn($rows) => $rows->pluck('value', 'field')->toArray())
-            ->toArray();
+        return $this->translations()->select(['locale', 'field', 'value'])->get()->groupBy('locale')->map(fn ($rows
+            ) => $rows->pluck('value', 'field')->toArray())->toArray();
     }
 
     /**
@@ -421,13 +462,9 @@ trait HasTranslation
     {
         $locale = $locale ?: app()->getLocale();
 
-        $max = $this->translations()
-            ->withTrashed()
-            ->where('locale', $locale)
-            ->where('field', $field)
-            ->max('version');
+        $max = $this->translations()->withTrashed()->where('locale', $locale)->where('field', $field)->max('version');
 
-        return (int)($max ?: 0);
+        return (int) ($max ?: 0);
     }
 
     /**
@@ -448,9 +485,9 @@ trait HasTranslation
             ->where('field', $field)
             ->orderByDesc('version')
             ->get(['version', 'value', 'deleted_at'])
-            ->map(static fn($row) => [
-                'version' => (int)$row->version,
-                'value' => $row->value,
+            ->map(static fn ($row) => [
+                'version'    => (int) $row->version,
+                'value'      => $row->value,
                 'deleted_at' => optional($row->deleted_at)?->toDateTimeString(),
             ])
             ->toArray();
@@ -574,7 +611,7 @@ trait HasTranslation
      */
     public function usesTranslationVersioning(): bool
     {
-        return (bool)$this->baseTranslationVersioning;
+        return (bool) $this->baseTranslationVersioning;
     }
 
     /**
@@ -589,11 +626,10 @@ trait HasTranslation
      */
     public function scopeWhereTranslationEquals(
         Builder $query,
-        string  $field,
-        string  $value,
+        string $field,
+        string $value,
         ?string $locale = null
-    ): Builder
-    {
+    ): Builder {
         return $query->whereHas('translations', function (Builder $q) use ($field, $value, $locale) {
             $q->where('field', $field);
 
@@ -617,11 +653,10 @@ trait HasTranslation
      */
     public function scopeWhereTranslationLike(
         Builder $query,
-        string  $field,
-        string  $needle,
+        string $field,
+        string $needle,
         ?string $locale = null
-    ): Builder
-    {
+    ): Builder {
         $locale = $locale ?: app()->getLocale();
         $driver = $query->getModel()->getConnection()->getDriverName();
         $pattern = '%' . $needle . '%';
@@ -631,6 +666,7 @@ trait HasTranslation
 
             if ($driver === 'pgsql') {
                 $q->where('value', 'ILIKE', $pattern);
+
                 return;
             }
 
@@ -650,37 +686,42 @@ trait HasTranslation
      */
     public function scopeSearchTranslation(
         Builder $query,
-        string  $field,
-        string  $needle,
+        string $field,
+        string $needle,
         ?string $locale = null
-    ): Builder
-    {
+    ): Builder {
         $locale = $locale ?: app()->getLocale();
         $driver = $query->getModel()->getConnection()->getDriverName();
         $likePattern = '%' . $needle . '%';
 
-        return $query->whereHas('translations', function (Builder $q) use ($driver, $field, $locale, $needle, $likePattern) {
+        return $query->whereHas('translations', function (Builder $q) use (
+            $driver,
+            $field,
+            $locale,
+            $needle,
+            $likePattern
+        ) {
             $q->where('field', $field)->where('locale', $locale);
 
             $q->where(function (Builder $inner) use ($driver, $needle, $likePattern) {
                 if ($driver === 'mysql' || $driver === 'mariadb') {
                     $inner->whereRaw('MATCH(`value`) AGAINST (? IN NATURAL LANGUAGE MODE)', [$needle])
                         ->orWhere('value', 'LIKE', $likePattern);
+
                     return;
                 }
 
                 if ($driver === 'pgsql') {
-                    $inner->whereRaw(
-                        "to_tsvector('simple', coalesce(value, '')) @@ plainto_tsquery('simple', ?)",
-                        [$needle]
-                    )->orWhere('value', 'ILIKE', $likePattern);
+                    $inner->whereRaw("to_tsvector('simple', coalesce(value, '')) @@ plainto_tsquery('simple', ?)", [$needle])
+                        ->orWhere('value', 'ILIKE', $likePattern);
+
                     return;
                 }
 
                 if ($driver === 'sqlsrv') {
                     $contains = '"' . str_replace('"', '""', $needle) . '*"';
-                    $inner->whereRaw('CONTAINS([value], ?)', [$contains])
-                        ->orWhere('value', 'LIKE', $likePattern);
+                    $inner->whereRaw('CONTAINS([value], ?)', [$contains])->orWhere('value', 'LIKE', $likePattern);
+
                     return;
                 }
 
