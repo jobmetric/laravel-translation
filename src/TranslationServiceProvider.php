@@ -5,16 +5,20 @@ namespace JobMetric\Translation;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use JobMetric\EventSystem\Support\EventRegistry;
 use JobMetric\Metadata\MetadataServiceProvider;
+use JobMetric\PackageCore\Enums\RegisterClassTypeEnum;
 use JobMetric\PackageCore\Exceptions\DependencyPublishableClassNotFoundException;
 use JobMetric\PackageCore\Exceptions\MigrationFolderNotFoundException;
+use JobMetric\PackageCore\Exceptions\RegisterClassTypeNotFoundException;
 use JobMetric\PackageCore\PackageCore;
 use JobMetric\PackageCore\PackageCoreServiceProvider;
+use JobMetric\Translation\Services\Translation;
 
 class TranslationServiceProvider extends PackageCoreServiceProvider
 {
     /**
      * @throws MigrationFolderNotFoundException
      * @throws DependencyPublishableClassNotFoundException
+     * @throws RegisterClassTypeNotFoundException
      */
     public function configuration(PackageCore $package): void
     {
@@ -22,6 +26,7 @@ class TranslationServiceProvider extends PackageCoreServiceProvider
             ->hasConfig()
             ->hasTranslation()
             ->hasMigration()
+            ->registerClass('translation', Translation::class, RegisterClassTypeEnum::SINGLETON())
             ->registerDependencyPublishable(MetadataServiceProvider::class);
     }
 

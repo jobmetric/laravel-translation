@@ -4,21 +4,23 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use JobMetric\PackageCore\Output\Response;
 use JobMetric\Translation\Exceptions\ModelHasTranslationNotFoundException;
 use JobMetric\Translation\HasTranslation;
 use JobMetric\Translation\Models\Translation;
 
-if (!function_exists('translation_model_uses_has_translation')) {
+if (! function_exists('translation_model_uses_has_translation')) {
     /**
      * Check whether a model class/object uses the HasTranslation trait (recursively).
      *
      * @param object|string $model
+     *
      * @return bool
      */
     function translation_model_uses_has_translation(object|string $model): bool
     {
         $class = is_object($model) ? get_class($model) : $model;
-        if (!class_exists($class)) {
+        if (! class_exists($class)) {
             return false;
         }
 
@@ -34,11 +36,11 @@ if (!function_exists('translation_model_uses_has_translation')) {
         } while ($cursor = get_parent_class($cursor));
 
         $stack = $results;
-        while (!empty($stack)) {
+        while (! empty($stack)) {
             $trait = array_pop($stack);
             $nested = class_uses($trait) ?: [];
             foreach ($nested as $t) {
-                if (!in_array($t, $results, true)) {
+                if (! in_array($t, $results, true)) {
                     $results[] = $t;
                     $stack[] = $t;
                 }
@@ -49,25 +51,27 @@ if (!function_exists('translation_model_uses_has_translation')) {
     }
 }
 
-if (!function_exists('translation')) {
+if (! function_exists('translation')) {
     /**
      * Store translations on a model using translateBatch semantics.
      * Input shape: ['fa' => ['title' => '...'], 'en' => [...]]
      *
      * @param Model $model
      * @param array $data
+     *
      * @return void
      * @throws Throwable
      */
     function translation(Model $model, array $data = []): void
     {
-        if (!translation_model_uses_has_translation($model)) {
+        if (! translation_model_uses_has_translation($model)) {
             throw new ModelHasTranslationNotFoundException($model::class);
         }
 
         // Prefer translateBatch if available; otherwise iterate.
         if (method_exists($model, 'translateBatch')) {
             $model->translateBatch($data);
+
             return;
         }
 
@@ -79,7 +83,7 @@ if (!function_exists('translation')) {
     }
 }
 
-if (!function_exists('translationResourceData')) {
+if (! function_exists('translationResourceData')) {
     /**
      * Normalize translation relations into an array suitable for API resources.
      * Accepts iterable of translation rows (active rows recommended).
@@ -87,6 +91,7 @@ if (!function_exists('translationResourceData')) {
      *
      * @param iterable $relations
      * @param string|null $locale
+     *
      * @return array<string, array<string, mixed>>
      */
     function translationResourceData(iterable $relations, string $locale = null): array
@@ -105,7 +110,7 @@ if (!function_exists('translationResourceData')) {
     }
 }
 
-if (!function_exists('translationDataSelect')) {
+if (! function_exists('translationDataSelect')) {
     /**
      * Build an id => translated value map for a field across many models.
      * Efficient single-query implementation against the translations table.
@@ -113,15 +118,17 @@ if (!function_exists('translationDataSelect')) {
      * @param EloquentCollection $objects Collection of the same model type
      * @param string $field
      * @param string|null $locale
+     *
      * @return Collection          key: parent id, value: translation value
+     * @throws ModelHasTranslationNotFoundException
      */
     function translationDataSelect(EloquentCollection $objects, string $field, string $locale = null): Collection
     {
         $first = $objects->first();
-        if (!$first) {
+        if (! $first) {
             return collect();
         }
-        if (!translation_model_uses_has_translation($first)) {
+        if (! translation_model_uses_has_translation($first)) {
             throw new ModelHasTranslationNotFoundException(get_class($first));
         }
 
@@ -131,9 +138,9 @@ if (!function_exists('translationDataSelect')) {
         }
 
         $locale = $locale ?: app()->getLocale();
-        $table = (string)config('translation.tables.translation', (new Translation)->getTable());
+        $table = (string) config('translation.tables.translation', (new Translation)->getTable());
         $type = get_class($first);
-        $versioned = method_exists($first, 'usesTranslationVersioning') ? (bool)$first->usesTranslationVersioning() : false;
+        $versioned = method_exists($first, 'usesTranslationVersioning') && (bool) $first->usesTranslationVersioning();
 
         $rows = DB::table($table)
             ->select(['translatable_id as id', 'value'])
@@ -141,19 +148,16 @@ if (!function_exists('translationDataSelect')) {
             ->whereIn('translatable_id', $ids->all())
             ->where('locale', $locale)
             ->where('field', $field)
-            ->when(
-                $versioned,
-                fn($q) => $q->whereNull('deleted_at'),
-                fn($q) => $q->where('version', 1)->whereNull('deleted_at')
-            )
+            ->when($versioned, fn ($q) => $q->whereNull('deleted_at'), fn ($q) => $q->where('version', 1)
+                ->whereNull('deleted_at'))
             ->get();
 
         // Map to id => value. Only include rows that actually exist.
-        return $rows->keyBy('id')->map(fn($r) => $r->value);
+        return $rows->keyBy('id')->map(fn ($r) => $r->value);
     }
 }
 
-if (!function_exists('translation_value')) {
+if (! function_exists('translation_value')) {
     /**
      * Convenience wrapper to fetch a single translated field from a model.
      *
@@ -161,11 +165,13 @@ if (!function_exists('translation_value')) {
      * @param string $field
      * @param string|null $locale
      * @param int|null $version
+     *
      * @return string|null
+     * @throws ModelHasTranslationNotFoundException
      */
     function translation_value(Model $model, string $field, ?string $locale = null, ?int $version = null): ?string
     {
-        if (!translation_model_uses_has_translation($model)) {
+        if (! translation_model_uses_has_translation($model)) {
             throw new ModelHasTranslationNotFoundException($model::class);
         }
 
@@ -173,20 +179,48 @@ if (!function_exists('translation_value')) {
     }
 }
 
-if (!function_exists('translation_values')) {
+if (! function_exists('translation_values')) {
     /**
      * Convenience wrapper to fetch all translated fields for a locale, or grouped by locale.
      *
      * @param Model $model
      * @param string|null $locale
+     *
      * @return array
+     * @throws ModelHasTranslationNotFoundException
      */
     function translation_values(Model $model, ?string $locale = null): array
     {
-        if (!translation_model_uses_has_translation($model)) {
+        if (! translation_model_uses_has_translation($model)) {
             throw new ModelHasTranslationNotFoundException($model::class);
         }
 
         return $model->getTranslations($locale);
+    }
+}
+
+if (! function_exists('translation_set')) {
+    /**
+     * Call generic {@see \JobMetric\Translation\Services\Translation::setTranslation}.
+     *
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $requestContext
+     * @param class-string<Model> $modelClass
+     * @param string $message
+     * @param int $status
+     * @param Closure|null $notFoundExceptionFactory
+     *
+     * @return Response
+     * @throws Throwable
+     */
+    function translation_set(
+        array $data,
+        array $requestContext,
+        string $modelClass,
+        string $message,
+        int $status = 200,
+        ?Closure $notFoundExceptionFactory = null
+    ): Response {
+        return app('translation')->setTranslation($data, $requestContext, $modelClass, $message, $status, $notFoundExceptionFactory);
     }
 }
