@@ -94,7 +94,7 @@ if (! function_exists('translationResourceData')) {
      *
      * @return array<string, array<string, mixed>>
      */
-    function translationResourceData(iterable $relations, string $locale = null): array
+    function translationResourceData(iterable $relations, ?string $locale = null): array
     {
         $data = [];
 
@@ -122,7 +122,7 @@ if (! function_exists('translationDataSelect')) {
      * @return Collection          key: parent id, value: translation value
      * @throws ModelHasTranslationNotFoundException
      */
-    function translationDataSelect(EloquentCollection $objects, string $field, string $locale = null): Collection
+    function translationDataSelect(EloquentCollection $objects, string $field, ?string $locale = null): Collection
     {
         $first = $objects->first();
         if (! $first) {
