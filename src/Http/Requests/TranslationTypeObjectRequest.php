@@ -6,13 +6,13 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use JobMetric\Translation\Exceptions\ModelHasTranslationNotFoundException;
 use JobMetric\Translation\Rules\TranslationFieldExistRule;
-use JobMetric\Translation\Typeify\Translation;
+use JobMetric\Translation\Support\Translation;
 
 /**
  * Trait TranslationTypeObjectRequest
  *
  * Builds validation rules and attribute labels for a single "translation" object
- * based on Typeify\Translation schema, across all provided locales in the payload.
+ * based on translation registry schema, across all provided locales in the payload.
  *
  * Role:
  * - Use all locales present under "translation" or fall back to app()->getLocale().
@@ -27,7 +27,7 @@ trait TranslationTypeObjectRequest
      *
      * @param array<string, mixed> $rules Rules array (passed by reference).
      * @param array<string, mixed> $data Incoming request data.
-     * @param Collection<int,Translation> $translations Typeify items defining fields.
+     * @param Collection<int,Translation> $translations registry items defining fields.
      * @param class-string $class_name FQCN of the model that owns translations.
      * @param string $field_name Primary field name, defaults to 'name'.
      * @param int|null $object_id Current object id for update scenarios.
@@ -101,7 +101,7 @@ trait TranslationTypeObjectRequest
      *
      * @param array<string, string> $params Attribute names (passed by reference).
      * @param array<string, mixed> $data Incoming request data.
-     * @param Collection<int,Translation> $translations Typeify items defining fields.
+     * @param Collection<int,Translation> $translations registry items defining fields.
      *
      * @return void
      */

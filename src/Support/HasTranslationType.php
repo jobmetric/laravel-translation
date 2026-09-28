@@ -1,6 +1,6 @@
 <?php
 
-namespace JobMetric\Translation\Typeify;
+namespace JobMetric\Translation\Support;
 
 use Closure;
 use Illuminate\Support\Collection;
@@ -19,8 +19,6 @@ trait HasTranslationType
      *
      * @var array $translation
      */
-    protected array $translation = [];
-
     /**
      * boot translation service type
      *
@@ -95,18 +93,19 @@ trait HasTranslationType
         if ($callable instanceof Closure) {
             $callable($builder = new TranslationBuilder);
 
-            $this->translation[$this->type][] = $builder->build();
+            $translations = [$builder->build()];
         } else {
+            $translations = [];
             foreach ($callable as $translation) {
                 $builder = new TranslationBuilder;
 
                 $builder->customField($translation['customField'] ?? null);
 
-                $this->translation[$this->type][] = $builder->build();
+                $translations[] = $builder->build();
             }
         }
 
-        $this->setTypeParam('translation', $this->translation);
+        $this->appendTypeParam('translation', $translations);
 
         return $this;
     }
@@ -118,8 +117,6 @@ trait HasTranslationType
      */
     public function getTranslation(): Collection
     {
-        $translation = $this->getTypeParam('translation', []);
-
-        return collect($translation[$this->type] ?? []);
+        return collect($this->getTypeParam('translation', []));
     }
 }

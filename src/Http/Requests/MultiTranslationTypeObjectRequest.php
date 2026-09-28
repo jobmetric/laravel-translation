@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use JobMetric\Language\Facades\Language;
 use JobMetric\Translation\Exceptions\ModelHasTranslationNotFoundException;
 use JobMetric\Translation\Rules\TranslationFieldExistRule;
-use JobMetric\Translation\Typeify\Translation;
+use JobMetric\Translation\Support\Translation;
 
 /**
  * Trait MultiTranslationTypeObjectRequest
@@ -31,7 +31,7 @@ trait MultiTranslationTypeObjectRequest
      *   translation.{locale}.{custom}       => {custom validation or 'string|nullable|sometimes'}
      *
      * @param array<string, mixed> $rules Rules array (passed by reference).
-     * @param Collection<int, Translation> $translations Typeify items defining fields.
+     * @param Collection<int, Translation> $translations registry items defining fields.
      * @param class-string $class_name FQCN of the model that owns translations.
      * @param string $field_name Primary field name (e.g., "name") that must be unique by locale.
      * @param int|null $object_id Current object id for update scenarios (ignored on create).
@@ -95,7 +95,7 @@ trait MultiTranslationTypeObjectRequest
      * Role: Maps "translation.{locale}.{field}" to translatable labels.
      *
      * @param array<string, string> $params Attribute names (passed by reference).
-     * @param Collection<int, Translation> $translations Typeify items defining fields.
+     * @param Collection<int, Translation> $translations registry items defining fields.
      *
      * @return void
      */

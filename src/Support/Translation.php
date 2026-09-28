@@ -1,6 +1,6 @@
 <?php
 
-namespace JobMetric\Translation\Typeify;
+namespace JobMetric\Translation\Support;
 
 use JobMetric\CustomField\CustomField;
 

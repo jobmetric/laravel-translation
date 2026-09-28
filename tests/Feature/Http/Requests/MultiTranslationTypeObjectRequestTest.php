@@ -66,7 +66,7 @@ class MultiTranslationTypeObjectRequestTest extends TestCase
     }
 
     /**
-     * Build a minimal Typeify-like Translation item.
+     * Build a minimal registry-like Translation item.
      *
      * @param string      $uniqName
      * @param string|null $validation

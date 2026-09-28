@@ -2,7 +2,7 @@
 
 namespace JobMetric\Translation;
 
-use JobMetric\Translation\Typeify\Translation;
+use JobMetric\Translation\Support\Translation;
 use Throwable;
 
 /**

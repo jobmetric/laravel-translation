@@ -1,6 +1,6 @@
 <?php
 
-namespace JobMetric\Translation\Typeify;
+namespace JobMetric\Translation\Support;
 
 use Closure;
 use Illuminate\Support\Traits\Macroable;

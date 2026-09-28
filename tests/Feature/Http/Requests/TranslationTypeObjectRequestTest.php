@@ -45,7 +45,7 @@ class TranslationTypeObjectRequestTest extends TestCase
     }
 
     /**
-     * Helper to build a minimal Typeify\Translation-like item.
+     * Helper to build a minimal registry Translation-like item.
      *
      * @param string|null $uniqName  The custom field key (null to simulate missing).
      * @param string|null $validation Validation string (default used if null).
@@ -53,7 +53,7 @@ class TranslationTypeObjectRequestTest extends TestCase
      * @param string|null $label     Optional label key for attributes.
      * @return object
      */
-    protected function makeTypeifyItem(?string $uniqName, ?string $validation = null, bool $unique = false, ?string $label = null): object
+    protected function makeRegistryItem(?string $uniqName, ?string $validation = null, bool $unique = false, ?string $label = null): object
     {
         $item = new \stdClass();
         $item->customField = new \stdClass();
@@ -84,10 +84,10 @@ class TranslationTypeObjectRequestTest extends TestCase
 
         // items: unique slug, non-unique description, ignored because equals primary "name", and ignored missing uniqName
         $translations = new Collection([
-            $this->makeTypeifyItem('slug', 'string|min:3', true),
-            $this->makeTypeifyItem('description', 'string|nullable|sometimes', false),
-            $this->makeTypeifyItem('name', 'string|min:2', true),   // should be skipped (equals primary)
-            $this->makeTypeifyItem(null, 'string|min:2', true),     // should be skipped (no uniqName)
+            $this->makeRegistryItem('slug', 'string|min:3', true),
+            $this->makeRegistryItem('description', 'string|nullable|sometimes', false),
+            $this->makeRegistryItem('name', 'string|min:2', true),   // should be skipped (equals primary)
+            $this->makeRegistryItem(null, 'string|min:2', true),     // should be skipped (no uniqName)
         ]);
 
         $rules = [];
@@ -142,8 +142,8 @@ class TranslationTypeObjectRequestTest extends TestCase
 
         $data = []; // no translation key
         $translations = new Collection([
-            $this->makeTypeifyItem('slug', 'string|min:3', true),
-            $this->makeTypeifyItem('description', null, false),
+            $this->makeRegistryItem('slug', 'string|min:3', true),
+            $this->makeRegistryItem('description', null, false),
         ]);
 
         $rules = [];
@@ -183,9 +183,9 @@ class TranslationTypeObjectRequestTest extends TestCase
         ];
 
         $translations = new Collection([
-            $this->makeTypeifyItem('slug', null, false, 'translation.fields.slug'),
-            $this->makeTypeifyItem('description', null, false, 'translation.fields.description'),
-            $this->makeTypeifyItem(null, null, false, 'translation.fields.ignored'), // ignored (no uniqName)
+            $this->makeRegistryItem('slug', null, false, 'translation.fields.slug'),
+            $this->makeRegistryItem('description', null, false, 'translation.fields.description'),
+            $this->makeRegistryItem(null, null, false, 'translation.fields.ignored'), // ignored (no uniqName)
         ]);
 
         $params = [];
