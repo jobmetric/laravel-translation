@@ -15,11 +15,6 @@ use Throwable;
 trait HasTranslationType
 {
     /**
-     * The translation custom fields
-     *
-     * @var array $translation
-     */
-    /**
      * boot translation service type
      *
      * @return void
