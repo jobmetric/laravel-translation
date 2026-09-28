@@ -26,6 +26,10 @@ return [
         "translation" => "Translation",
     ],
 
+    "messages" => [
+        "set_translation" => "Translation set successfully.",
+    ],
+
     'events' => [
         'translation_stored' => [
             'title' => 'Translation Stored',

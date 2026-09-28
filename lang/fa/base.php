@@ -26,6 +26,10 @@ return [
         "translation" => "ترجمه",
     ],
 
+    "messages" => [
+        "set_translation" => "ترجمه با موفقیت ثبت شد.",
+    ],
+
     'events' => [
         'translation_stored' => [
             'title' => 'ذخیره ترجمه',
