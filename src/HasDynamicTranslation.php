@@ -3,13 +3,12 @@
 namespace JobMetric\Translation;
 
 use JobMetric\Translation\Support\Translation;
-use Throwable;
 
 /**
  * Trait HasDynamicTranslation
  *
  * Provides dynamic translation-allowed fields per model "type" based on
- * the service type registry returned by getServiceTypeClass(static::class).
+ * the service type registry returned by the model's typeRegistry() method.
  *
  * Role:
  * - On boot, inspects all registered types and collects Translation fields' uniqName
@@ -18,8 +17,8 @@ use Throwable;
  * - Offers helper methods to refresh and fetch fields for specific types.
  *
  * Requirements:
- * - A global/helper function getServiceTypeClass(string $fqcn) must return a service type registry
- *   exposing: getTypes(): array<string>, and type(string $typeName) with getTranslation(): iterable<Translation>.
+ * - The model must expose a static typeRegistry() method returning a registry
+ *   with values() and for() methods.
  */
 trait HasDynamicTranslation
 {
@@ -86,17 +85,12 @@ trait HasDynamicTranslation
     {
         static::$dynamicTranslation = [];
 
-        try {
-            $serviceType = getServiceTypeClass(static::class);
-        } catch (Throwable) {
-            // If the service type registry cannot be resolved, keep cache empty.
-            return;
-        }
+        $serviceType = static::typeRegistry();
 
-        $types = (array) $serviceType->getTypes();
+        $types = (array) $serviceType->values();
 
         foreach ($types as $type) {
-            $innerType = $serviceType->type($type);
+            $innerType = $serviceType->for($type);
 
             $fields = [];
 
