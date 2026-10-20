@@ -306,7 +306,7 @@ trait HasTranslation
 
                 $nextVersion = $last ? ((int) $last + 1) : 1;
 
-                $this->translations()->create([
+                $outcomeTranslation = $this->translations()->create([
                     'locale'  => $locale,
                     'field'   => $field,
                     'value'   => $value,
@@ -318,13 +318,16 @@ trait HasTranslation
                     'value'   => $value,
                     'version' => $nextVersion,
                 ]));
+            if ($outcomeTranslation->wasRecentlyCreated || $outcomeTranslation->wasChanged('value')) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Translation\Events\Translation\TranslationStoreCommittedEvent($outcomeTranslation->getKey()), $outcomeTranslation->getConnectionName());
+            }
             }
 
             return $this;
         }
 
         foreach ($data as $field => $value) {
-            $this->translations()->updateOrCreate([
+            $outcomeTranslation = $this->translations()->updateOrCreate([
                     'locale'  => $locale,
                     'field'   => $field,
                     'version' => 1,
@@ -335,6 +338,9 @@ trait HasTranslation
                 'value'   => $value,
                 'version' => 1,
             ]));
+            if ($outcomeTranslation->wasRecentlyCreated || $outcomeTranslation->wasChanged('value')) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Translation\Events\Translation\TranslationStoreCommittedEvent($outcomeTranslation->getKey()), $outcomeTranslation->getConnectionName());
+            }
         }
 
         return $this;
@@ -508,9 +514,13 @@ trait HasTranslation
         $records = $force ? $query->withTrashed()->get() : $query->get();
 
         $records->each(function ($translation) use ($force) {
+            $outcomeWasTrashed = $translation->trashed();
             $force ? $translation->forceDelete() : $translation->delete();
 
             event(new TranslationForgetEvent($translation));
+            if (! $translation->exists || (! $outcomeWasTrashed && $translation->trashed())) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Translation\Events\Translation\TranslationDeleteCommittedEvent($translation->getKey()), $translation->getConnectionName());
+            }
         });
 
         return $this;
@@ -531,9 +541,13 @@ trait HasTranslation
         $records = $force ? $query->withTrashed()->get() : $query->get();
 
         $records->each(function ($translation) use ($force) {
+            $outcomeWasTrashed = $translation->trashed();
             $force ? $translation->forceDelete() : $translation->delete();
 
             event(new TranslationForgetEvent($translation));
+            if (! $translation->exists || (! $outcomeWasTrashed && $translation->trashed())) {
+                app(\JobMetric\EventSystem\Support\CommittedEventDispatcher::class)->dispatch(new \JobMetric\Translation\Events\Translation\TranslationDeleteCommittedEvent($translation->getKey()), $translation->getConnectionName());
+            }
         });
 
         return $this;

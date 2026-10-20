@@ -38,6 +38,12 @@ class TranslationServiceProvider extends PackageCoreServiceProvider
      */
     public function afterBootPackage(): void
     {
+        if ($this->app->bound('EventRegistry')) {
+            $registry = $this->app->make('EventRegistry');
+            $registry->register(\JobMetric\Translation\Events\Translation\TranslationStoreCommittedEvent::class);
+            $registry->register(\JobMetric\Translation\Events\Translation\TranslationDeleteCommittedEvent::class);
+        }
+
         // Register events if EventRegistry is available
         // This ensures EventRegistry is available if EventSystemServiceProvider is loaded
         if ($this->app->bound('EventRegistry')) {
